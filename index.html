@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="id" data-theme="purple">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -13,6 +13,13 @@
 [data-theme="light"] .glass{background:rgba(255,255,255,.85)}
 [data-theme="light"] input,[data-theme="light"] textarea,[data-theme="light"] select{background:#fff;border-color:#cbd5e1}
 [data-theme="light"] .btn-outline{border-color:#cbd5e1;color:#334155}
+
+[data-theme="purple"]{--accent:#8b5cf6;--accent2:#7c3aed;--glass-bg:rgba(139,92,246,.06);--glass-border:rgba(139,92,246,.15);--glass-hover:rgba(139,92,246,.15)}
+[data-theme="ocean"]{--accent:#3b82f6;--accent2:#2563eb;--glass-bg:rgba(59,130,246,.06);--glass-border:rgba(59,130,246,.15);--glass-hover:rgba(59,130,246,.15)}
+[data-theme="teal"]{--accent:#14b8a6;--accent2:#0d9488;--glass-bg:rgba(20,184,166,.06);--glass-border:rgba(20,184,166,.15);--glass-hover:rgba(20,184,166,.15)}
+[data-theme="amber"]{--accent:#f59e0b;--accent2:#d97706;--glass-bg:rgba(245,158,11,.06);--glass-border:rgba(245,158,11,.15);--glass-hover:rgba(245,158,11,.15)}
+[data-theme="rose"]{--accent:#f43f5e;--accent2:#e11d48;--glass-bg:rgba(244,63,94,.06);--glass-border:rgba(244,63,94,.15);--glass-hover:rgba(244,63,94,.15)}
+[data-theme="slate"]{--accent:#64748b;--accent2:#475569;--glass-bg:rgba(100,116,139,.06);--glass-border:rgba(100,116,139,.15);--glass-hover:rgba(100,116,139,.15)}
 [data-theme="light"] .btn-outline:hover:not(:disabled){border-color:var(--accent);background:rgba(124,58,237,.06)}
 [data-theme="light"] .tab-btn{color:#64748b}
 [data-theme="light"] .tab-btn.active{color:var(--accent)}
@@ -73,6 +80,16 @@ textarea{resize:vertical;min-height:80px}
 @media(max-width:1024px){.main-layout{flex-direction:column!important}.panel-left{width:100%!important;max-height:45vh}.panel-center{width:100%!important}.panel-right{width:100%!important}.tpb{display:flex!important}#mobTog{display:flex!important}.panel-left.collapsed,.panel-right.collapsed{display:none!important}}
 .tpb{display:none}
 select option{background:var(--card);color:var(--text)}
+
+.theme-picker{position:relative;display:inline-flex;align-items:center}
+.theme-dot{width:20px;height:20px;border-radius:50%;cursor:pointer;border:2px solid transparent;transition:all .2s}
+.theme-dot:hover{transform:scale(1.2)}
+.theme-dot.active{border-color:#fff;box-shadow:0 0 8px var(--accent)}
+.theme-drop{position:absolute;top:100%;right:0;margin-top:6px;background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:8px;display:none;flex-direction:column;gap:6px;z-index:100;box-shadow:0 8px 24px rgba(0,0,0,.4)}
+.theme-drop.show{display:flex}
+.theme-drop .tr{display:flex;align-items:center;gap:8px;padding:6px 10px;border-radius:6px;cursor:pointer;font-size:12px;color:var(--text);transition:all .2s}
+.theme-drop .tr:hover{background:var(--glass-bg)}
+.theme-drop .tr .sw{width:18px;height:18px;border-radius:50%;flex-shrink:0}
 </style>
 </head>
 <body>
@@ -234,6 +251,7 @@ select option{background:var(--card);color:var(--text)}
 <div><h1 style="font-size:16px;font-weight:700;line-height:1.2">PenZero AI</h1><p style="font-size:11px;color:var(--muted)">Tulis e-book dengan AI</p></div>
 </div>
 <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
+<div class="theme-picker"><div class="theme-dot" id="themeColorDot" style="background:var(--accent)" onclick="document.getElementById('themeDrop').classList.toggle('show')"></div><div class="theme-drop" id="themeDrop"><div class="tr" onclick="setColorTheme('purple')"><div class="sw" style="background:#8b5cf6"></div>Ungu</div><div class="tr" onclick="setColorTheme('ocean')"><div class="sw" style="background:#3b82f6"></div>Biru</div><div class="tr" onclick="setColorTheme('teal')"><div class="sw" style="background:#14b8a6"></div>Teal</div><div class="tr" onclick="setColorTheme('amber')"><div class="sw" style="background:#f59e0b"></div>Amber</div><div class="tr" onclick="setColorTheme('rose')"><div class="sw" style="background:#f43f5e"></div>Rose</div><div class="tr" onclick="setColorTheme('slate')"><div class="sw" style="background:#64748b"></div>Slate</div></div></div>
 <button class="btn btn-outline btn-sm" id="themeBtn" onclick="toggleTheme()">🌙</button>
 <button class="btn btn-outline btn-sm" id="langBtn" onclick="toggleLang()" title="EN/ID">🇬🇧 EN</button>
 <button class="btn btn-outline btn-sm" onclick="openAiVoice()" style="background:rgba(139,92,246,.08);border-color:rgba(139,92,246,.3)">🎤 AI Voice</button>
@@ -755,6 +773,20 @@ function resetAiVoice(){if(aiVR)try{aiVR.stop()}catch(e){};aiVL=false;document.g
 function toggleAiVoice(){if(aiVL){if(aiVR)aiVR.stop();aiVL=false;document.getElementById("aiMicBtn").textContent="🎤";return}var SR=window.SpeechRecognition||window.webkitSpeechRecognition;if(!SR){alert("Voice not supported. Use Chrome.");return}aiVR=new SR();aiVR.lang="id-ID";aiVR.interimResults=true;aiVR.onstart=function(){aiVL=true;document.getElementById("aiMicBtn").textContent="🔴";document.getElementById("aiMicBtn").style.borderColor="#ef4444";document.getElementById("aiVoiceHint").innerHTML="Mendengarkan..."};aiVR.onresult=function(e){var t="";for(var i=e.resultIndex;i<e.results.length;i++)t+=e.results[i][0].transcript;document.getElementById("aiVoiceText").style.display="block";document.getElementById("aiVoiceText").textContent=t};aiVR.onend=function(){aiVL=false;document.getElementById("aiMicBtn").textContent="🎤";document.getElementById("aiMicBtn").style.borderColor="var(--accent)";document.getElementById("aiVoiceListen").style.display="none";var t=document.getElementById("aiVoiceText").textContent.trim();if(t)askAiVoice(t)};aiVR.start()}
 async function askAiVoice(q){document.getElementById("aiVoiceLoading").style.display="block";var k=localStorage.getItem("groq_apikey")||localStorage.getItem("gemini_apikey")||"";if(!k){document.getElementById("aiVoiceLoading").style.display="none";alert("Isi API key dulu (🔑 Keys)");return}var p="Buatkan 5 ide judul buku kreatif dengan sinopsis berdasarkan: \""+q+"\". Format JSON: [{\"title\":\"...\",\"synopsis\":\"...\"}].";try{var u,r;if(k.startsWith("gsk_")){r=await fetch("https://api.groq.com/openai/v1/chat/completions",{method:"POST",headers:{"Content-Type":"application/json",Authorization:"Bearer "+k},body:JSON.stringify({model:"llama-3.3-70b-versatile",messages:[{role:"user",content:p}],temperature:0.9,max_tokens:800})});var d=await r.json();u=d.choices[0].message.content}else{r=await fetch("https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-lite:generateContent?key="+k,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({contents:[{parts:[{text:p}]}]})});var g=await r.json();u=g.candidates[0].content.parts[0].text}var ideas=[],m=u.match(/\[[\s\S]*\]/);if(m){try{ideas=JSON.parse(m[0])}catch(e){}}if(!ideas.length){var ls=u.split("\n").filter(function(l){return l.trim().length>10});ideas=ls.slice(0,5).map(function(l){return{title:l.replace(/^\d+[\.\)\s-]+/,"").replace(/\*\*/g,"").trim(),synopsis:""}})}document.getElementById("aiVoiceLoading").style.display="none";var res=document.getElementById("aiVoiceResults");res.innerHTML=ideas.map(function(i,idx){return '<div class="ide-opt" onclick="applyAiIdea('+idx+')"><strong>'+(idx+1)+'. '+i.title+'</strong>'+(i.synopsis?'<br><span style="font-size:12px;color:var(--muted)">'+i.synopsis+'</span>':'')+'<span class="pick">→ Pilih</span></div>'}).join("");res.style.display="flex";document.getElementById("aiVoiceRetryBtn").style.display="inline-flex";window._aiVoiceIdeas=ideas}catch(e){document.getElementById("aiVoiceLoading").style.display="none";document.getElementById("aiVoiceRetryBtn").style.display="inline-flex";alert("Gagal. Cek API key.")}}
 function applyAiIdea(idx){var i=window._aiVoiceIdeas[idx];if(!i)return;document.getElementById("titleInp").value=i.title;S.title=i.title;document.getElementById("descInp").value=i.synopsis||"";S.desc=i.synopsis||"";as();ub();document.getElementById("aiVoiceModal").style.display="none";toast("Ide diterapkan!","success")}
+
+// Theme colors
+var THEMES=["purple","ocean","teal","amber","rose","slate"];
+function setColorTheme(t){
+  document.documentElement.setAttribute("data-theme",t);
+  localStorage.setItem("penzero_color",t);
+  document.getElementById("themeColorDot").style.background="var(--accent)";
+  document.getElementById("themeDrop").classList.remove("show");
+}
+(function(){
+  var saved=localStorage.getItem("penzero_color")||"purple";
+  document.documentElement.setAttribute("data-theme",saved);
+  document.addEventListener("click",function(e){var d=document.getElementById("themeDrop");if(d&&d.classList.contains("show")&&!d.contains(e.target)&&e.target!==document.getElementById("themeColorDot"))d.classList.remove("show");});
+})();
 </script>
 </body>
 </html>
