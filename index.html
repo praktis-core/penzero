@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PenZero AI</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#04080f;--panel:#0b1221;--card:#111827;--border:#1e293b;--text:#e2e8f0;--muted:#94a3b8;--accent:#8b5cf6;--accent2:#7c3aed;--success:#10b981;--warning:#f59e0b;--danger:#ef4444;--glass-bg:rgba(139,92,246,.06);--glass-border:rgba(139,92,246,.15);--glass-hover:rgba(139,92,246,.15)}
+[data-theme="light"]{--bg:#f8fafc;--panel:#fff;--card:#f1f5f9;--border:#e2e8f0;--text:#0f172a;--muted:#64748b;--accent:#7c3aed;--accent2:#6d28d9;--success:#059669;--warning:#d97706;--danger:#dc2626;--glass-bg:rgba(124,58,237,.04);--glass-border:rgba(124,58,237,.12);--glass-hover:rgba(124,58,237,.12)}
+[data-theme="light"] .glass{background:rgba(255,255,255,.85)}
+[data-theme="light"] input,[data-theme="light"] textarea,[data-theme="light"] select{background:#fff;border-color:#cbd5e1}
+[data-theme="light"] .btn-outline{border-color:#cbd5e1;color:#334155}
+[data-theme="light"] .btn-outline:hover:not(:disabled){border-color:var(--accent);background:rgba(124,58,237,.06)}
+[data-theme="light"] .tab-btn{color:#64748b}
+[data-theme="light"] .tab-btn.active{color:var(--accent)}
+[data-theme="light"] .tab-btn:hover{color:#1e293b}
+*{box-sizing:border-box;scrollbar-width:thin;scrollbar-color:#334155 transparent}
+html,body{height:100%;margin:0}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);display:flex;flex-direction:column;overflow:hidden}
+::-webkit-scrollbar{width:6px}::-webkit-scrollbar-thumb{background:#334155;border-radius:3px}
+.panel{background:var(--panel);border:1px solid var(--border)}
+.glass{background:rgba(17,24,39,.8);backdrop-filter:blur(12px)}
+input,textarea,select{background:var(--card);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:10px 14px;width:100%;font-family:'Inter',sans-serif;font-size:14px;outline:none;transition:all .2s}
+input:focus,textarea:focus,select:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(139,92,246,.15)}
+textarea{resize:vertical;min-height:80px}
+.btn{display:inline-flex;align-items:center;gap:6px;border:none;border-radius:8px;padding:10px 18px;font-size:14px;font-weight:600;cursor:pointer;transition:all .2s;font-family:'Inter',sans-serif;white-space:nowrap}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.btn-accent{background:var(--accent);color:#fff}.btn-accent:hover:not(:disabled){background:var(--accent2)}
+.btn-outline{background:transparent;border:1px solid var(--border);color:var(--text)}.btn-outline:hover:not(:disabled){border-color:var(--accent);color:var(--accent)}
+.btn-sm{padding:6px 12px;font-size:12px}
+.btn-success{background:#059669;color:#fff}.btn-success:hover:not(:disabled){background:#047857}
+.tab-btn{padding:8px 16px;border:none;background:transparent;color:var(--muted);font-size:13px;font-weight:500;cursor:pointer;border-bottom:2px solid transparent;transition:all .2s;font-family:'Inter',sans-serif}
+.tab-btn.active{color:var(--accent);border-bottom-color:var(--accent)}.tab-btn:hover{color:var(--text)}
+.chapter-item{padding:10px 14px;border-radius:12px;cursor:pointer;transition:all .25s;border:1px solid var(--glass-border);display:flex;align-items:center;gap:10px;background:var(--glass-bg);margin-bottom:4px}
+.chapter-item:hover{background:var(--glass-hover);border-color:rgba(139,92,246,.4);transform:scale(1.02)}
+.chapter-item.active{background:rgba(139,92,246,.12);border-color:var(--accent);border-left:3px solid var(--accent)}
+.chapter-item .num{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,rgba(139,92,246,.3),rgba(139,92,246,.1));display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--accent);flex-shrink:0}
+.chapter-item.active .num{background:var(--accent);color:#fff}
+.progress-bar{height:4px;background:#1e293b;border-radius:2px;overflow:hidden}
+.progress-fill{height:100%;background:var(--accent);border-radius:2px;transition:width .5s}
+.toast-container{position:fixed;top:20px;right:20px;z-index:9999;display:flex;flex-direction:column;gap:8px}
+.toast{padding:12px 20px;border-radius:10px;font-size:14px;font-weight:500;box-shadow:0 8px 32px rgba(0,0,0,.4);animation:slideIn .3s;display:flex;align-items:center;gap:10px;max-width:400px}
+.toast.success{background:#065f46;color:#d1fae5;border:1px solid #059669}
+.toast.error{background:#7f1d1d;color:#fecaca;border:1px solid #dc2626}
+.toast.info{background:#1e3a5f;color:#dbeafe;border:1px solid #3b82f6}
+.toast.warning{background:#78350f;color:#fef3c7;border:1px solid #d97706}
+@keyframes slideIn{from{transform:translateX(100%);opacity:0}to{transform:translateX(0);opacity:1}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+@keyframes glowPulse{0%,100%{box-shadow:0 0 20px rgba(139,92,246,.2)}50%{box-shadow:0 0 40px rgba(139,92,246,.5)}}
+@keyframes fadeInUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.spinner{width:20px;height:20px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .6s linear infinite}
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:9998;display:flex;align-items:center;justify-content:center}
+.modal{background:var(--panel);border:1px solid var(--border);border-radius:16px;padding:28px;max-width:440px;width:90%}
+.md-preview h1{font-size:1.5em;font-weight:700;margin:.8em 0 .4em}
+.md-preview h2{font-size:1.25em;font-weight:700;margin:.7em 0 .3em}
+.md-preview p{margin:.5em 0;line-height:1.8}
+.md-preview strong{font-weight:700}.md-preview em{font-style:italic}
+.empty-hero{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:50px 20px;animation:fadeInUp .6s;min-height:100%}
+.empty-hero .icon{font-size:72px;animation:float 3s ease-in-out infinite;margin-bottom:20px;filter:drop-shadow(0 0 20px rgba(139,92,246,.3))}
+.empty-hero h2{font-size:28px;font-weight:800;background:linear-gradient(135deg,#a78bfa,#e879f9);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:10px}
+.empty-hero .sub{font-size:14px;color:var(--muted);max-width:480px;line-height:1.6;margin-bottom:30px}
+.empty-hero .cards{display:flex;gap:14px;flex-wrap:wrap;justify-content:center;margin-bottom:30px}
+.empty-hero .card{background:var(--glass-bg);border:1px solid var(--glass-border);border-radius:12px;padding:18px 16px;width:155px;text-align:center;cursor:pointer;transition:all .25s}
+.empty-hero .card:hover{transform:translateY(-4px);border-color:rgba(139,92,246,.4);box-shadow:0 8px 24px rgba(139,92,246,.15)}
+.empty-hero .card .ci{font-size:26px;margin-bottom:8px}
+.empty-hero .cta{background:linear-gradient(135deg,#8b5cf6,#7c3aed);color:#fff;border:none;border-radius:12px;padding:14px 32px;font-size:15px;font-weight:700;cursor:pointer;animation:glowPulse 2.5s infinite;transition:all .2s;font-family:'Inter',sans-serif}
+.empty-hero .cta:hover{transform:scale(1.05);animation:none}
+.tab-content{display:none}.tab-content.active{display:block}
+@media(max-width:1024px){.main-layout{flex-direction:column!important}.panel-left{width:100%!important;max-height:45vh}.panel-center{width:100%!important}.panel-right{width:100%!important}.tpb{display:flex!important}#mobTog{display:flex!important}.panel-left.collapsed,.panel-right.collapsed{display:none!important}}
+.tpb{display:none}
+select option{background:var(--card);color:var(--text)}
+</style>
+</head>
+<body>
+
+<div id="apiBanner" style="display:block;background:linear-gradient(135deg,#0d9488,#0891b2);color:#fff;padding:10px 12px;border-radius:8px;margin:8px 12px 0;font-size:12px;line-height:1.5;display:none">
+<strong>API Key Gratis!</strong> Daftar di <a href="https://console.groq.com/keys" target="_blank" style="color:#fff;text-decoration:underline">console.groq.com</a> lalu paste di <span onclick="openApikeyModal()" style="cursor:pointer;text-decoration:underline;font-weight:700">Keys</span>
+</div>
+
+<div class="toast-container" id="toasts"></div>
+
+<!-- Confirm Modal -->
+<div class="modal-overlay" id="confirmModal" style="display:none">
+<div class="modal">
+<h3 class="text-lg font-bold mb-3" id="confirmTitle"></h3>
+<p style="color:var(--muted);margin-bottom:20px" id="confirmMsg"></p>
+<div style="display:flex;gap:10px;justify-content:flex-end">
+<button class="btn btn-outline btn-sm" onclick="closeConfirm()">Batal</button>
+<button class="btn btn-sm" style="background:#ef4444;color:#fff" id="confirmOkBtn">Konfirmasi</button>
+</div></div></div>
+
+<!-- API Key Modal -->
+<div class="modal-overlay" id="apikeyModal" style="display:none">
+<div class="modal">
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+<h3 class="text-lg font-bold" style="color:var(--accent)">🔑 Konfigurasi AI</h3>
+<button onclick="closeApikeyModal()" style="background:none;border:none;color:var(--muted);font-size:24px;cursor:pointer">&times;</button>
+</div>
+<div style="display:flex;gap:8px;margin-bottom:12px">
+<button id="pGemini" class="tab-btn active" style="flex:1;text-align:center" onclick="switchProv('gemini')">🔵 Gemini</button>
+<button id="pGroq" class="tab-btn" style="flex:1;text-align:center" onclick="switchProv('groq')">🟢 Groq (Gratis)</button>
+</div>
+<div id="fGemini">
+<label style="font-size:12px;color:var(--muted);display:block;margin-bottom:4px">Gemini API Key</label>
+<input id="geminiKeyInp" placeholder="Paste Gemini API Key..." style="margin-bottom:8px">
+<p style="font-size:11px;color:var(--muted);margin-bottom:8px">Gratis di <a href="https://aistudio.google.com/app/apikeys" target="_blank" style="color:var(--accent)">Google AI Studio</a></p>
+</div>
+<div id="fGroq" style="display:none">
+<label style="font-size:12px;color:var(--muted);display:block;margin-bottom:4px">Groq API Key</label>
+<input id="groqKeyInp" placeholder="Paste Groq API Key (gsk_xxxx...)..." style="margin-bottom:8px">
+<div style="background:#f0fdf4;border:1px solid #86efac;border-radius:8px;padding:10px;font-size:12px;line-height:1.6">
+<strong style="color:#166534">100% Gratis!</strong> Buka <a href="https://console.groq.com/keys" target="_blank" style="color:var(--accent);font-weight:700">console.groq.com</a> → Login → Create Key → Copy
+</div>
+</div>
+<div style="display:flex;gap:10px;justify-content:flex-end;margin-top:16px">
+<button class="btn btn-outline btn-sm" onclick="closeApikeyModal()">Tutup</button>
+<button class="btn btn-accent btn-sm" onclick="saveApikey()">Simpan</button>
+</div></div></div>
+
+<!-- Ide Generator Modal -->
+<div class="modal-overlay" id="ideModal" style="display:none" onclick="if(event.target===this)this.style.display='none'">
+<div class="modal" style="max-width:500px">
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+<h3 class="text-lg font-bold" style="color:var(--accent)">💡 Generate Ide Buku</h3>
+<button onclick="document.getElementById('ideModal').style.display='none'" style="background:none;border:none;color:var(--muted);font-size:24px;cursor:pointer">&times;</button>
+</div>
+<label style="font-size:12px;color:var(--muted);display:block;margin-bottom:4px">Kata Kunci / Topik</label>
+<input id="ideKeyword" placeholder="Contoh: bisnis online, cerita horor..." style="margin-bottom:12px">
+<label style="font-size:12px;color:var(--muted);display:block;margin-bottom:4px">Format</label>
+<select id="ideStyle" style="margin-bottom:16px"><option value="novel">Novel</option><option value="nonfiksi">Non-Fiksi</option><option value="bisnis">Bisnis</option><option value="selfhelp">Self-Help</option><option value="edukasi">Edukasi</option></select>
+<div id="ideLoading" style="display:none;text-align:center;padding:16px"><div class="spinner" style="margin:0 auto 8px"></div><p style="font-size:13px;color:var(--muted)">Menghasilkan ide...</p></div>
+<div id="ideResult" style="display:none;margin-bottom:16px"></div>
+<div style="display:flex;gap:10px;justify-content:flex-end">
+<button class="btn btn-outline btn-sm" onclick="document.getElementById('ideModal').style.display='none'">Tutup</button>
+<!-- FIX: Ditambahkan atribut id="ideGenBtn" agar fungsi JS tidak menyebabkan error NullPointerException -->
+<button id="ideGenBtn" class="btn btn-accent btn-sm" onclick="genIdeas()">✨ Generate</button>
+</div></div></div>
+
+<!-- Guide Modal -->
+<div class="modal-overlay" id="guideModal" style="display:none" onclick="if(event.target===this)this.style.display='none'">
+<div class="modal" style="max-width:600px;max-height:80vh;overflow-y:auto;padding:0">
+<div style="padding:18px 24px;border-bottom:1px solid var(--border);font-weight:700;color:var(--accent);font-size:17px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;background:var(--panel);z-index:1;border-radius:16px 16px 0 0">
+📘 Panduan Lengkap
+<button onclick="document.getElementById('guideModal').style.display='none'" style="background:none;border:none;color:var(--muted);font-size:24px;cursor:pointer">&times;</button>
+</div>
+<div style="padding:18px 24px;font-size:14px;line-height:1.7;color:#cbd5e1">
+<div style="background:#1e293b;border:1px solid #334155;border-radius:10px;padding:16px;margin-bottom:14px">
+<h4 style="color:#0d9488;margin:0 0 10px">🔑 Cara Pakai</h4>
+<p style="margin:6px 0"><strong>1.</strong> Klik <strong>🔑 Keys</strong> → pilih Groq → paste API key gratis → Simpan</p>
+<p style="margin:6px 0"><strong>2.</strong> Pilih template atau isi manual judul & sinopsis</p>
+<p style="margin:6px 0"><strong>3.</strong> Klik <strong>Generate Outline</strong></p>
+<p style="margin:6px 0"><strong>4.</strong> Klik chapter → <strong>Tulis dengan AI</strong></p>
+<p style="margin:6px 0"><strong>5.</strong> Export ke HTML / DOC / PDF</p>
+</div>
+<div style="background:#1e293b;border:1px solid #334155;border-radius:10px;padding:16px;margin-bottom:14px">
+<h4 style="color:#0d9488;margin:0 0 10px">🌐 Setup Domain & Deploy</h4>
+<p style="margin:4px 0;font-size:13px"><strong>1.</strong> Beli domain <code style="background:#334155;color:#5eead4;padding:1px 6px;border-radius:3px">penzero.my.id</code> di Domainesia (Rp9.900)</p>
+<p style="margin:4px 0;font-size:13px"><strong>2.</strong> Cloudflare → Websites → Add domain → Free</p>
+<p style="margin:4px 0;font-size:13px"><strong>3.</strong> Ganti NS Domainesia dgn NS Cloudflare</p>
+<p style="margin:4px 0;font-size:13px"><strong>4.</strong> Workers → penzero → Custom Domain</p>
+<p style="margin:4px 0;font-size:13px"><strong>5.</strong> Drag <code style="background:#334155;color:#5eead4;padding:1px 6px;border-radius:3px">index.html</code> → Deploy</p>
+</div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+<div style="background:#1e293b;border:1px solid #334155;border-radius:10px;padding:14px">
+<h4 style="color:#0d9488;margin:0 0 8px">Tips</h4>
+<p style="margin:4px 0;font-size:13px">• Sinopsis detail = hasil bagus<br>• Error 429? Tunggu 10 detik<br>• Aktifkan Humanize untuk teks natural</p>
+</div>
+<div style="background:#1e293b;border:1px solid #334155;border-radius:10px;padding:14px">
+<h4 style="color:#0d9488;margin:0 0 8px">FAQ</h4>
+<p style="margin:4px 0;font-size:13px">• Key aman di browser Anda<br>• 30 req/menit gratis<br>• Tanpa kartu kredit</p>
+</div>
+</div></div></div></div>
+
+<!-- Privacy Modal -->
+<div class="modal-overlay" id="privacyModal" style="display:none" onclick="if(event.target===this)this.style.display='none'">
+<div class="modal" style="max-width:560px">
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+<h3 style="font-weight:700;font-size:16px">🔒 Privasi</h3>
+<button onclick="document.getElementById('privacyModal').style.display='none'" style="background:none;border:none;color:var(--muted);font-size:24px;cursor:pointer">&times;</button>
+</div>
+<div style="font-size:12px;color:var(--muted);line-height:1.7;max-height:350px;overflow-y:auto">
+<p style="margin-bottom:10px"><strong style="color:var(--text)">PenZero AI</strong> berjalan 100% di browser. Tidak ada server, tidak ada database.</p>
+<p style="font-weight:700;color:var(--text);margin-top:12px">Data Anda</p>
+<p style="margin-bottom:8px">Semua data disimpan di localStorage browser. Tidak pernah dikirim ke server manapun.</p>
+<p style="font-weight:700;color:var(--text);margin-top:12px">API Key</p>
+<p style="margin-bottom:8px">Key disimpan di localStorage dan dikirim langsung ke Google/Groq API. Kami tidak memiliki akses ke key Anda.</p>
+<p style="font-weight:700;color:var(--text);margin-top:12px">Hapus Data</p>
+<p>Klik Reset di header atau hapus localStorage via DevTools (F12).</p>
+</div></div></div>
+
+<!-- HEADER -->
+<header class="glass" style="border-bottom:1px solid var(--border);padding:10px 20px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;flex-wrap:wrap;gap:8px">
+<div style="display:flex;align-items:center;gap:12px">
+<div style="width:36px;height:36px;background:var(--accent);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px">📖</div>
+<div><h1 style="font-size:16px;font-weight:700;line-height:1.2">PenZero AI</h1><p style="font-size:11px;color:var(--muted)">Tulis e-book dengan AI</p></div>
+</div>
+<div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
+<button class="btn btn-outline btn-sm" id="themeBtn" onclick="toggleTheme()">🌙</button>
+<button class="btn btn-outline btn-sm" onclick="openApikeyModal()">🔑 Keys</button>
+<button class="btn btn-outline btn-sm" onclick="saveProject()">💾 Simpan</button>
+<button class="btn btn-outline btn-sm" onclick="document.getElementById('fileInp').click()">📂 Buka</button>
+<input type="file" id="fileInp" accept=".json" style="display:none" onchange="loadProject(event)">
+<button class="btn btn-outline btn-sm" onclick="doReset()">🔄 Reset</button>
+<button class="btn btn-outline btn-sm" onclick="document.getElementById('guideModal').style.display='flex'">📘</button>
+<button class="btn btn-outline btn-sm" onclick="document.getElementById('privacyModal').style.display='flex'">🔒</button>
+</div>
+</header>
+
+<!-- MAIN -->
+<div class="main-layout" style="display:flex;flex:1;min-height:0;overflow:hidden">
+
+<!-- LEFT -->
+<div class="panel-left panel" id="leftPanel" style="width:30%;min-width:220px;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:14px">
+<div class="tpb" style="justify-content:flex-end;margin-bottom:4px"><button class="btn btn-outline btn-sm" onclick="togPanel('left')">✕</button></div>
+<div style="background:var(--card);border-radius:12px;padding:16px">
+<h3 class="text-sm font-semibold mb-3" style="color:var(--accent)">Setup Buku</h3>
+<div style="display:flex;gap:0;margin-bottom:12px;background:#0f172a;border-radius:8px;padding:3px">
+<button class="tab-btn active" style="flex:1;text-align:center" id="tFiksi" onclick="setBT('Fiksi')">Fiksi</button>
+<button class="tab-btn" style="flex:1;text-align:center" id="tNon" onclick="setBT('Non-Fiksi')">Non-Fiksi</button>
+</div>
+<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:5px;margin-bottom:12px">
+<button class="btn btn-outline btn-sm" style="font-size:10px;padding:5px 6px;justify-content:center" onclick="selTpl('novel')">Novel</button>
+<button class="btn btn-outline btn-sm" style="font-size:10px;padding:5px 6px;justify-content:center" onclick="selTpl('bisnis')">Bisnis</button>
+<button class="btn btn-outline btn-sm" style="font-size:10px;padding:5px 6px;justify-content:center" onclick="selTpl('selfhelp')">Self-Help</button>
+<button class="btn btn-outline btn-sm" style="font-size:10px;padding:5px 6px;justify-content:center" onclick="selTpl('edukasi')">Edukasi</button>
+<button class="btn btn-outline btn-sm" style="font-size:10px;padding:5px 6px;justify-content:center" onclick="selTpl('teknologi')">Teknologi</button>
+<button class="btn btn-outline btn-sm" style="font-size:10px;padding:5px 6px;justify-content:center" onclick="selTpl('hobi')">Hobi</button>
+</div>
+<button class="btn btn-sm" style="width:100%;justify-content:center;background:rgba(245,158,11,.08);color:#fbbf24;border:1px solid rgba(245,158,11,.2);font-size:10px;padding:6px;margin-bottom:8px" onclick="document.getElementById('ideModal').style.display='flex';document.getElementById('ideKeyword').focus()">Generate Ide Buku</button>
+<label style="font-size:12px;color:var(--muted);display:block;margin-bottom:4px">Genre</label>
+<select id="genreSel" onchange="S.genre=this.value;as()"></select>
+<label style="font-size:12px;color:var(--muted);display:block;margin-top:10px;margin-bottom:4px">Judul Buku</label>
+<input id="titleInp" placeholder="Judul buku..." oninput="S.title=this.value;as();ub()">
+<label style="font-size:12px;color:var(--muted);display:block;margin-top:10px;margin-bottom:4px">Penulis</label>
+<input id="authorInp" placeholder="Nama penulis..." oninput="S.author=this.value;as()">
+<label style="font-size:12px;color:var(--muted);display:block;margin-top:10px;margin-bottom:4px">Target Pembaca</label>
+<input id="targetInp" placeholder="Remaja 15-18 tahun..." oninput="S.target=this.value;as()">
+<label style="font-size:12px;color:var(--muted);display:block;margin-top:10px;margin-bottom:4px">Sinopsis</label>
+<textarea id="descInp" placeholder="Tulis sinopsis..." oninput="S.desc=this.value;as();ub()" style="min-height:80px"></textarea>
+<div style="display:flex;gap:16px;margin-top:10px;flex-wrap:wrap">
+<label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer"><input type="checkbox" id="prologCk" onchange="S.hasProlog=this.checked;as();ucl();ub()" style="width:16px;height:16px;accent-color:var(--accent)"> Prolog</label>
+<label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer"><input type="checkbox" id="epilogCk" onchange="S.hasEpilog=this.checked;as();ucl();ub()" style="width:16px;height:16px;accent-color:var(--accent)"> Epilog</label>
+</div>
+<div style="display:flex;gap:10px;margin-top:10px">
+<div style="flex:1"><label style="font-size:12px;color:var(--muted);display:block;margin-bottom:4px">Chapter</label><input type="number" id="chapCnt" min="1" max="30" value="5" onchange="S.chapterCount=+this.value||5;as()" style="text-align:center"></div>
+<div style="flex:1"><label style="font-size:12px;color:var(--muted);display:block;margin-bottom:4px">Hal/Ch</label><input type="number" id="pageCnt" min="1" max="50" value="5" onchange="S.pagesPerChapter=+this.value||5;as()" style="text-align:center"></div>
+<div style="flex:1"><label style="font-size:12px;color:var(--muted);display:block;margin-bottom:4px">Bahasa</label><select id="langSel" onchange="S.lang=this.value;as()"><option value="Indonesia">ID</option><option value="English">EN</option></select></div>
+</div>
+<label style="font-size:12px;color:var(--muted);display:block;margin-top:10px;margin-bottom:4px">Tone</label>
+<select id="toneSel" onchange="S.tone=this.value;as()"><option>Formal</option><option>Santai/Kasual</option><option>Puitis</option><option>Akademis</option><option>Storytelling</option><option>Persuasif</option></select>
+<div style="display:flex;align-items:center;justify-content:space-between;margin-top:10px;padding:10px 14px;background:var(--glass-bg);border:1px solid var(--glass-border);border-radius:10px">
+<div><div style="font-weight:700;font-size:12px">Humanize AI</div><div style="font-size:10px;color:var(--muted)">Teks lebih natural</div></div>
+<label style="position:relative;display:inline-block;width:44px;height:24px;flex-shrink:0">
+<input type="checkbox" id="humTog" onchange="S.humanize=this.checked;as();uhi()" style="opacity:0;width:0;height:0">
+<span style="position:absolute;cursor:pointer;inset:0;background:var(--border);border-radius:24px;transition:.3s" id="humSlider"></span>
+<span style="position:absolute;height:18px;width:18px;left:3px;bottom:3px;background:#fff;border-radius:50%;transition:.3s" id="humKnob"></span>
+</label>
+</div>
+<button class="btn btn-outline" style="width:100%;margin-top:14px;justify-content:center" id="coverBtn" onclick="genCover()" disabled>Generate Cover</button>
+<div id="coverPrev" style="display:none;margin-top:10px;text-align:center">
+<img id="coverImg" src="" alt="Cover" style="max-width:100%;max-height:250px;border-radius:8px;box-shadow:0 4px 20px rgba(0,0,0,.5)">
+</div>
+<div id="coverLoad" style="display:none;text-align:center;padding:10px;margin-top:8px"><div class="spinner" style="margin:0 auto 8px"></div><p style="font-size:12px;color:var(--muted)">Membuat cover...</p></div>
+<button class="btn btn-accent" style="width:100%;margin-top:14px;justify-content:center" id="genOutBtn" onclick="genOutline()" disabled>Generate Outline</button>
+</div>
+<div style="background:var(--card);border-radius:12px;padding:16px;flex:1;overflow-y:auto;min-height:100px">
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+<h3 class="text-sm font-semibold" style="color:var(--accent)">Daftar Chapter</h3>
+<span id="chapProg" style="font-size:11px;color:var(--muted)"></span>
+</div>
+<div id="chapList" style="display:flex;flex-direction:column;gap:4px;max-height:300px;overflow-y:auto">
+<p style="font-size:13px;color:var(--muted);text-align:center;padding:20px">Generate outline dulu.</p>
+</div>
+<div style="display:flex;gap:6px;margin-top:10px">
+<button id="writeAllBtn" class="btn btn-success btn-sm" style="flex:1;justify-content:center" onclick="writeAll()" disabled>Tulis Semua</button>
+<button id="resetOutBtn" class="btn btn-outline btn-sm" style="flex:1;justify-content:center" onclick="resetOut()" disabled>Reset</button>
+</div>
+<div id="waProg" style="display:none;margin-top:8px">
+<div class="progress-bar"><div class="progress-fill" id="waFill" style="width:0%"></div></div>
+<p style="font-size:11px;color:var(--muted);text-align:center;margin-top:4px" id="waText">Memproses...</p>
+</div>
+</div>
+<button id="expHtml" class="btn btn-accent" style="width:100%;justify-content:center" onclick="expEbook('html')" disabled>Export HTML</button>
+<button id="expDoc" class="btn btn-success" style="width:100%;justify-content:center;margin-top:6px" onclick="expEbook('doc')" disabled>Export DOC</button>
+<button id="expPdf" class="btn btn-accent" style="width:100%;justify-content:center;margin-top:6px" onclick="expPdf()" disabled>Export PDF</button>
+</div>
+
+<div style="width:5px;cursor:col-resize;flex-shrink:0;z-index:10;transition:background .2s" onmouseover="this.style.background='var(--accent)'" onmouseout="this.style.background='transparent'"></div>
+
+<!-- CENTER -->
+<div class="panel-center panel" style="flex:1;min-width:300px;display:flex;flex-direction:column;overflow-y:auto;border-left:none;border-right:none">
+<div id="emptyHero" class="empty-hero">
+<div class="icon">📖</div>
+<h2>Mulai Perjalanan Menulismu</h2>
+<p class="sub">Tulis buku impianmu dengan bantuan AI.</p>
+<div class="cards">
+<div class="card" onclick="selTpl('novel')"><div class="ci">📖</div><div style="font-size:12px;font-weight:600">Novel</div></div>
+<div class="card" onclick="selTpl('bisnis')"><div class="ci">💼</div><div style="font-size:12px;font-weight:600">Bisnis</div></div>
+<div class="card" onclick="selTpl('selfhelp')"><div class="ci">🧠</div><div style="font-size:12px;font-weight:600">Self-Help</div></div>
+<div class="card" onclick="selTpl('edukasi')"><div class="ci">🎓</div><div style="font-size:12px;font-weight:600">Edukasi</div></div>
+<div class="card" onclick="selTpl('teknologi')"><div class="ci">🔬</div><div style="font-size:12px;font-weight:600">Teknologi</div></div>
+<div class="card" onclick="selTpl('hobi')"><div class="ci">🎨</div><div style="font-size:12px;font-weight:600">Hobi</div></div>
+</div>
+<button class="cta" onclick="startNew()">Mulai dari Nol</button>
+<button class="cta" style="background:linear-gradient(135deg,#f59e0b,#d97706);margin-top:8px;animation:none" onclick="document.getElementById('ideModal').style.display='flex';document.getElementById('ideKeyword').focus()">Butuh Ide?</button>
+</div>
+<div id="centerMain" style="display:none;flex-direction:column;flex:1;min-height:0">
+<div style="padding:16px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px">
+<div style="display:flex;align-items:center;gap:10px;flex:1;min-width:180px">
+<span style="font-size:13px;color:var(--muted)">Bab</span>
+<span id="actNum" style="font-weight:700;color:var(--accent)">-</span>
+<input id="chTitleInp" placeholder="Judul chapter..." style="flex:1;min-width:140px" oninput="updChTitle()">
+</div>
+<span id="wc" style="font-size:12px;color:var(--muted)">0 kata</span>
+</div>
+<div style="flex:1;display:flex;flex-direction:column;overflow:hidden">
+<div style="display:flex;gap:6px;padding:8px 16px;flex-wrap:wrap">
+<button id="writeBtn" class="btn btn-accent btn-sm" onclick="writeCh()" disabled>Tulis dengan AI</button>
+<button id="rewBtn" class="btn btn-outline btn-sm" onclick="rewCh()" disabled>Tulis Ulang</button>
+<button id="saveBtn" class="btn btn-outline btn-sm" onclick="saveCh()" disabled>Simpan</button>
+<button id="skipBtn" class="btn btn-outline btn-sm" style="display:none;background:rgba(255,255,0,.1);border-color:#fbbf24;color:#fbbf24" onclick="skipTW()">Skip</button>
+</div>
+<div style="display:flex;gap:0;padding:0 16px">
+<button id="editBtn" class="tab-btn active" onclick="setMode('edit')">Edit</button>
+<button id="prevBtn" class="tab-btn" onclick="setMode('preview')">Preview</button>
+</div>
+<div id="editArea" style="flex:1;overflow-y:auto;padding:0 16px 16px">
+<textarea id="chContent" placeholder="Pilih chapter lalu tulis dengan AI..." style="width:100%;min-height:500px;resize:vertical;border-radius:10px;padding:16px;font-size:14px;line-height:1.8" oninput="uwc()"></textarea>
+</div>
+<div id="prevArea" class="md-preview" style="flex:1;overflow-y:auto;padding:0 16px 16px;display:none"></div>
+</div></div>
+</div>
+
+<div style="width:5px;cursor:col-resize;flex-shrink:0;z-index:10;transition:background .2s" onmouseover="this.style.background='var(--accent)'" onmouseout="this.style.background='transparent'"></div>
+
+<!-- RIGHT -->
+<div class="panel-right panel" id="rightPanel" style="width:30%;min-width:220px;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:10px">
+<div class="tpb" style="justify-content:flex-end;margin-bottom:4px"><button class="btn btn-outline btn-sm" onclick="togPanel('right')">✕</button></div>
+<div style="display:flex;gap:0;border-bottom:1px solid var(--border)">
+<button class="tab-btn active" id="tPlag" onclick="swTab('plag')">Plagiarism</button>
+<button class="tab-btn" id="tAi" onclick="swTab('ai')">AI Detect</button>
+<button class="tab-btn" id="tStat" onclick="swTab('stats')">Stats</button>
+</div>
+<div class="tab-content active" id="cPlag">
+<button id="plagBtn" class="btn btn-outline btn-sm" style="width:100%;justify-content:center" onclick="chkPlag()" disabled>Periksa Chapter Ini</button>
+<div id="plagLoad" style="display:none;text-align:center;padding:20px"><div class="spinner" style="margin:0 auto 8px"></div><p style="font-size:13px;color:var(--muted)">Memeriksa...</p></div>
+<div id="plagRes" style="margin-top:12px"></div>
+</div>
+<div class="tab-content" id="cAi">
+<button id="aiBtn" class="btn btn-outline btn-sm" style="width:100%;justify-content:center" onclick="detAI()" disabled>Deteksi AI Content</button>
+<div id="aiLoad" style="display:none;text-align:center;padding:20px"><div class="spinner" style="margin:0 auto 8px"></div><p style="font-size:13px;color:var(--muted)">Mendeteksi...</p></div>
+<div id="aiRes" style="margin-top:12px"></div>
+</div>
+<div class="tab-content" id="cStats">
+<div id="statsDiv" style="padding:8px 0"><p style="font-size:13px;color:var(--muted);text-align:center">Belum ada data.</p></div>
+</div>
+</div>
+</div>
+
+<!-- Mobile -->
+<div style="display:none;position:fixed;bottom:16px;left:50%;transform:translateX(-50%);gap:8px;z-index:100;background:rgba(0,0,0,.8);border-radius:24px;padding:6px;backdrop-filter:blur(8px)" id="mobTog">
+<button class="btn btn-outline btn-sm" onclick="togPanel('left')">Panel</button>
+<button class="btn btn-outline btn-sm" onclick="togPanel('right')">Tools</button>
+</div>
+
+<script>
+// FIX: Membungkus localStorage ke object "LS" yang safe/aman 
+// Mencegah error "SecurityError" yang membuat seluruh web/menu crash di browser terestriksi
+var LS = {
+  get: function(k){ try{ return localStorage.getItem(k); } catch(e){ return null; } },
+  set: function(k,v){ try{ localStorage.setItem(k,v); } catch(e){} },
+  rem: function(k){ try{ localStorage.removeItem(k); } catch(e){} }
+};
+
+// ===== STATE =====
+var S={bookType:'Fiksi',genre:'',title:'',author:'',target:'',desc:'',hasProlog:false,hasEpilog:false,chapterCount:5,pagesPerChapter:5,lang:'Indonesia',tone:'Formal',humanize:false,chapters:[],coverData:''};
+var aIdx=-1, writing=false, twTimer=null, twFull='', prov='groq', cfmCb=null, asTimer=null, wcTimer=null;
+
+// ===== GENRES =====
+var GR={Fiksi:['Romantis','Horor','Thriller','Fantasi','Sci-Fi','Misteri','Drama','Komedi','Sejarah','Petualangan','Sastra','Distopia'],'Non-Fiksi':['Bisnis & Marketing','Self-Help','Pendidikan','Teknologi','Kesehatan','Agama','Biografi','Politik','Sains','Hobi','Parenting','Kuliner']};
+
+// ===== TEMPLATES =====
+var TP={
+novel:{type:'Fiksi',genre:'Romantis',tone:'Storytelling',ch:10,pg:5,desc:'Sebuah kisah cinta yang menguji batas kesetiaan dan keberanian dua jiwa yang terpisah oleh jarak dan waktu.'},
+bisnis:{type:'Non-Fiksi',genre:'Bisnis & Marketing',tone:'Persuasif',ch:8,pg:5,desc:'Panduan praktis membangun bisnis digital dari nol hingga profit konsisten dengan studi kasus nyata.'},
+selfhelp:{type:'Non-Fiksi',genre:'Self-Help',tone:'Santai/Kasual',ch:10,pg:4,desc:'Buku pengembangan diri untuk menemukan potensi tersembunyi dan membangun kebiasaan positif.'},
+edukasi:{type:'Non-Fiksi',genre:'Pendidikan',tone:'Akademis',ch:8,pg:6,desc:'Buku referensi komprehensif yang membahas konsep fundamental secara mendalam dan sistematis.'},
+teknologi:{type:'Non-Fiksi',genre:'Teknologi',tone:'Formal',ch:10,pg:5,desc:'Eksplorasi perkembangan teknologi terkini dan dampaknya terhadap kehidupan manusia.'},
+hobi:{type:'Non-Fiksi',genre:'Hobi',tone:'Santai/Kasual',ch:8,pg:4,desc:'Panduan lengkap untuk pemula yang ingin menekuni hobi baru dari dasar hingga mahir.'}
+};
+
+// ===== TOAST =====
+function toast(m,t){t=t||'info';var c=document.getElementById('toasts'),d=document.createElement('div');d.className='toast '+t;var ic={success:'✅',error:'❌',info:'ℹ️',warning:'⚠️'};d.innerHTML='<span>'+(ic[t]||'')+'</span><span>'+m+'</span>';c.appendChild(d);setTimeout(function(){d.style.opacity='0';d.style.transform='translateX(100%)';d.style.transition='all .3s';setTimeout(function(){d.remove()},300)},3500)}
+
+// ===== THEME =====
+function toggleTheme(){var l=document.documentElement.getAttribute('data-theme')==='light';document.documentElement.setAttribute('data-theme',l?'':'light');document.getElementById('themeBtn').textContent=l?'🌙':'☀️';LS.set('pz_th',l?'':'light')}
+
+// ===== MODAL =====
+function openApikeyModal(){document.getElementById('apikeyModal').style.display='flex';document.getElementById('geminiKeyInp').value=LS.get('pz_gk')||'';document.getElementById('groqKeyInp').value=LS.get('pz_rk')||'';switchProv(prov)}
+function closeApikeyModal(){document.getElementById('apikeyModal').style.display='none'}
+function showConfirm(t,m,cb){document.getElementById('confirmTitle').textContent=t;document.getElementById('confirmMsg').textContent=m;cfmCb=cb;document.getElementById('confirmOkBtn').onclick=function(){closeConfirm();if(cfmCb)cfmCb()};document.getElementById('confirmModal').style.display='flex'}
+function closeConfirm(){document.getElementById('confirmModal').style.display='none';cfmCb=null}
+
+// ===== PROVIDER =====
+function switchProv(p){prov=p;document.getElementById('pGemini').className='tab-btn'+(p==='gemini'?' active':'');document.getElementById('pGroq').className='tab-btn'+(p==='groq'?' active':'');document.getElementById('fGemini').style.display=p==='gemini'?'block':'none';document.getElementById('fGroq').style.display=p==='groq'?'block':'none'}
+function saveApikey(){var g=document.getElementById('geminiKeyInp').value.trim(),r=document.getElementById('groqKeyInp').value.trim();if(g)LS.set('pz_gk',g);else LS.rem('pz_gk');if(r)LS.set('pz_rk',r);else LS.rem('pz_rk');closeApikeyModal();updBanner();toast('API Key tersimpan!','success')}
+function getKey(){return prov==='groq'?(LS.get('pz_rk')||''):(LS.get('pz_gk')||'')}
+function updBanner(){document.getElementById('apiBanner').style.display=(LS.get('pz_rk')||LS.get('pz_gk'))?'none':'block'}
+
+// ===== AI CALL =====
+async function callAI(prompt,sys){
+var key=getKey();
+if(!key){openApikeyModal();throw new Error('API Key belum diatur')}
+var temp = S.humanize ? 0.9 : 0.75;
+if(prov==='groq'){
+var r=await fetch('https://api.groq.com/openai/v1/chat/completions',{method:'POST',headers:{'Authorization':'Bearer '+key,'Content-Type':'application/json'},body:JSON.stringify({model:'llama-3.3-70b-versatile',messages:[{role:'system',content:sys||'Kamu penulis buku profesional.'},{role:'user',content:prompt}],temperature:temp,max_tokens:6000})});
+if(!r.ok){if(r.status===429){toast('Rate limit, tunggu 10 detik...','warning');await new Promise(function(x){setTimeout(x,10000)});return callAI(prompt,sys)}var e=await r.json().catch(function(){return{}});throw new Error(e.error?e.error.message:'Groq error '+r.status)}
+var d=await r.json();return d.choices[0].message.content
+}else{
+// Menggunakan versi 1.5 flash untuk stabilitas endpoint secara umum (tidak semua user disetujui untuk versi 2.0)
+var r2=await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key='+key,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({systemInstruction:{parts:[{text:sys||'Kamu penulis buku profesional.'}]},contents:[{parts:[{text:prompt}]}],generationConfig:{temperature:temp,maxOutputTokens:8000}})});
+if(!r2.ok){var e2=await r2.json().catch(function(){return{}});throw new Error(e2.error?e2.error.message:'Gemini error '+r2.status)}
+var d2=await r2.json();return d2.candidates[0].content.parts[0].text
+}}
+
+// ===== BOOK TYPE =====
+function setBT(t){S.bookType=t;document.getElementById('tFiksi').className='tab-btn'+(t==='Fiksi'?' active':'');document.getElementById('tNon').className='tab-btn'+(t==='Non-Fiksi'?' active':'');fillGenres();as()}
+function fillGenres(){var s=document.getElementById('genreSel');s.innerHTML='<option value="">-- Pilih --</option>';(GR[S.bookType]||[]).forEach(function(g){var o=document.createElement('option');o.value=g;o.textContent=g;s.appendChild(o)});s.value=S.genre}
+
+// ===== TEMPLATE =====
+function selTpl(k){var t=TP[k];if(!t)return;S.bookType=t.type;S.genre=t.genre;S.tone=t.tone;S.chapterCount=t.ch;S.pagesPerChapter=t.pg;S.desc=t.desc;document.getElementById('tFiksi').className='tab-btn'+(S.bookType==='Fiksi'?' active':'');document.getElementById('tNon').className='tab-btn'+(S.bookType==='Non-Fiksi'?' active':'');fillGenres();syncUI();ub();document.getElementById('emptyHero').style.display='none';document.getElementById('centerMain').style.display='flex';toast('Template "'+k+'" dipilih','success');as()}
+function startNew(){S.title='';S.author='';S.target='';S.desc='';S.genre='';S.chapters=[];aIdx=-1;document.getElementById('emptyHero').style.display='none';document.getElementById('centerMain').style.display='flex';syncUI();ub()}
+function syncUI(){document.getElementById('genreSel').value=S.genre;document.getElementById('titleInp').value=S.title;document.getElementById('authorInp').value=S.author;document.getElementById('targetInp').value=S.target;document.getElementById('descInp').value=S.desc;document.getElementById('chapCnt').value=S.chapterCount;document.getElementById('pageCnt').value=S.pagesPerChapter;document.getElementById('langSel').value=S.lang;document.getElementById('toneSel').value=S.tone;document.getElementById('prologCk').checked=S.hasProlog;document.getElementById('epilogCk').checked=S.hasEpilog;document.getElementById('humTog').checked=S.humanize;uhi();ucl()}
+function uhi(){var on=S.humanize;document.getElementById('humSlider').style.background=on?'linear-gradient(135deg,#8b5cf6,#7c3aed)':'var(--border)';document.getElementById('humKnob').style.left=on?'23px':'3px'}
+
+// ===== OUTLINE =====
+async function genOutline(){
+if(!(S.title||'').trim()){toast('Isi judul dulu','warning');return}
+if(!(S.desc||'').trim()){toast('Isi sinopsis dulu','warning');return}
+var b=document.getElementById('genOutBtn');b.disabled=true;b.innerHTML='<div class="spinner" style="width:16px;height:16px"></div> Generating...';
+try{
+var hi=S.humanize?'\nGunakan bahasa yang sangat natural, human-like, tidak kaku. Variasikan panjang kalimat.':'';
+var sys='Kamu perencana buku profesional. Output HANYA JSON array, tanpa markdown, tanpa code block. Format: [{"title":"...","summary":"..."}]';
+var p='Buat outline:\n- Judul: '+S.title+'\n- Tipe: '+S.bookType+'\n- Genre: '+S.genre+'\n- Sinopsis: '+S.desc+'\n- Target: '+S.target+'\n- Jumlah chapter: '+S.chapterCount+'\n- Bahasa: '+S.lang+'\n- Tone: '+S.tone+'\n- Prolog: '+(S.hasProlog?'Ya':'Tidak')+'\n- Epilog: '+(S.hasEpilog?'Ya':'Tidak')+hi+'\n\nOutput JSON array langsung.';
+var res=await callAI(p,sys);
+// FIX: Ekstrak JSON array untuk mengatasi kebiasaan LLM memberi obrolan tak perlu sebelum/sesudah JSON
+var jsonStr = res;
+var sIndex = res.indexOf('[');
+var eIndex = res.lastIndexOf(']');
+if(sIndex !== -1 && eIndex !== -1 && eIndex > sIndex) {
+  jsonStr = res.substring(sIndex, eIndex + 1);
+}
+var parsed=JSON.parse(jsonStr);
+S.chapters=parsed.map(function(c,i){return{title:c.title||'Chapter '+(i+1),summary:c.summary||'',content:''}});
+ucl();ub();toast('Outline dibuat! '+S.chapters.length+' chapter','success');as()
+}catch(e){toast('Gagal: '+e.message,'error')}
+b.disabled=false;b.innerHTML='Generate Outline'
+}
+function resetOut(){showConfirm('Reset Outline?','Semua chapter akan dihapus.',function(){S.chapters=[];aIdx=-1;document.getElementById('chContent').value='';document.getElementById('chTitleInp').value='';document.getElementById('actNum').textContent='-';uwc();ucl();ub();toast('Outline direset','info');as()})}
+
+// ===== CHAPTER LIST =====
+function ucl(){
+var el=document.getElementById('chapList');
+if(!S.chapters.length){el.innerHTML='<p style="font-size:13px;color:var(--muted);text-align:center;padding:20px">Generate outline dulu.</p>';updCp();return}
+var h='';
+for(var i=0;i<S.chapters.length;i++){
+var c=S.chapters[i],has=c.content&&c.content.trim(),n=i+1;
+if(S.hasProlog&&i===0)n='P';
+if(S.hasEpilog&&i===S.chapters.length-1)n='E';
+h+='<div class="chapter-item'+(aIdx===i?' active':'')+'" onclick="selCh('+i+')"><div class="num">'+n+'</div><div style="flex:1;min-width:0"><div style="font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+esc(c.title)+'</div><div style="font-size:11px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+esc(c.summary||'')+'</div>'+(has?'<div style="height:3px;background:var(--accent);border-radius:2px;margin-top:4px"></div>':'')+'</div></div>'
+}
+el.innerHTML=h;updCp()
+}
+function updCp(){var t=S.chapters.length,d=S.chapters.filter(function(c){return c.content&&c.content.trim()}).length;document.getElementById('chapProg').textContent=d+'/'+t+' selesai'}
+
+// ===== SELECT CHAPTER =====
+function selCh(i){if(writing){toast('Tunggu proses selesai','warning');return}saveSilent();aIdx=i;var c=S.chapters[i];document.getElementById('chTitleInp').value=c.title;document.getElementById('chContent').value=c.content||'';document.getElementById('actNum').textContent=i+1;document.getElementById('emptyHero').style.display='none';document.getElementById('centerMain').style.display='flex';ucl();uwc();ub()}
+function updChTitle(){if(aIdx<0||!S.chapters[aIdx])return;S.chapters[aIdx].title=document.getElementById('chTitleInp').value;ucl();as()}
+function saveCh(){if(aIdx<0)return;S.chapters[aIdx].content=document.getElementById('chContent').value;ucl();ub();as();toast('Chapter tersimpan','success')}
+function saveSilent(){if(aIdx<0)return;S.chapters[aIdx].content=document.getElementById('chContent').value}
+
+// ===== TYPEWRITER =====
+async function writeCh(){
+if(aIdx<0){toast('Pilih chapter dulu','warning');return}
+if(writing)return;
+var c=S.chapters[aIdx];writing=true;
+var b=document.getElementById('writeBtn');b.disabled=true;b.innerHTML='<div class="spinner" style="width:16px;height:16px"></div> Menulis...';
+document.getElementById('skipBtn').style.display='inline-flex';
+try{
+var pg=S.pagesPerChapter,wt=pg*300,prev='';
+for(var i=0;i<aIdx;i++){if(S.chapters[i].content)prev+='Ch'+(i+1)+': '+S.chapters[i].content.substring(0,200)+'...\n'}
+var hi=S.humanize?'\nPENTING: Tulis dengan gaya sangat natural dan manusiawi. Variasikan panjang kalimat. Gunakan bahasa sehari-hari sesekali. Hindari pola AI khas.':'';
+var sys='Kamu penulis buku profesional berbahasa '+S.lang+'. Tulis konten chapter menarik dan berkualitas.'+hi;
+var p='Tulis chapter:\nBuku: '+S.title+' | Genre: '+S.genre+' | Tone: '+S.tone+'\nChapter '+(aIdx+1)+': '+c.title+'\nRingkasan: '+c.summary+'\nTarget: ~'+wt+' kata'+hi+'\n'+(prev?'Sebelumnya:\n'+prev:'')+'\nTulis langsung konten, tanpa judul di awal, tanpa markdown block codes.';
+var res=await callAI(p,sys);
+res = res.replace(/^```[a-z]*\n/i, '').replace(/\n```$/i, ''); // Membersihkan sisa block
+twFull=res;doTW(res)
+}catch(e){toast('Gagal: '+e.message,'error');writing=false;b.disabled=false;b.innerHTML='Tulis dengan AI';document.getElementById('skipBtn').style.display='none'}
+}
+async function rewCh(){
+if(aIdx<0||writing)return;
+var c=S.chapters[aIdx];writing=true;
+var b=document.getElementById('rewBtn');b.disabled=true;b.innerHTML='<div class="spinner" style="width:16px;height:16px"></div> Ulang...';
+document.getElementById('skipBtn').style.display='inline-flex';
+try{
+var ex=c.content||'',hi=S.humanize?'\nTulis ulang dengan gaya sangat natural.':'';
+var sys='Kamu editor dan penulis buku profesional.'+hi;
+var p='Tulis ULANG chapter ini lebih baik dan menarik. Pertahankan alur tapi perbaiki gaya bahasa.\nJudul: '+c.title+'\nRingkasan: '+c.summary+'\nVersi lama:\n'+ex.substring(0,3000)+(ex.length>3000?'...(dst)':'')+'\n\nTulis ulang seluruh chapter dari awal, tanpa judul di awal, tanpa markdown block codes.';
+var res=await callAI(p,sys);
+res = res.replace(/^```[a-z]*\n/i, '').replace(/\n```$/i, '');
+twFull=res;doTW(res)
+}catch(e){toast('Gagal: '+e.message,'error');writing=false;b.disabled=false;b.innerHTML='Tulis Ulang';document.getElementById('skipBtn').style.display='none'}
+}
+function doTW(txt){var ta=document.getElementById('chContent');ta.value='';var i=0;function step(){if(i<txt.length){ta.value=txt.substring(0,i+1);ta.scrollTop=ta.scrollHeight;i++;uwc();twTimer=setTimeout(step,6)}else{finTW()}}step()}
+function skipTW(){if(twTimer)clearTimeout(twTimer);document.getElementById('chContent').value=twFull;finTW()}
+function finTW(){writing=false;document.getElementById('writeBtn').disabled=false;document.getElementById('writeBtn').innerHTML='Tulis dengan AI';document.getElementById('rewBtn').disabled=false;document.getElementById('skipBtn').style.display='none';if(aIdx>=0){S.chapters[aIdx].content=twFull;ucl();ub();as()}uwc();toast('Chapter selesai!','success')}
+
+// ===== WRITE ALL =====
+async function writeAll(){
+if(!S.chapters.length){toast('Generate outline dulu','warning');return}
+if(writing)return;
+var pr=document.getElementById('waProg'),fl=document.getElementById('waFill'),tx=document.getElementById('waText'),bt=document.getElementById('writeAllBtn');
+pr.style.display='block';bt.disabled=true;
+for(var i=0;i<S.chapters.length;i++){
+aIdx=i;fl.style.width=Math.round(i/S.chapters.length*100)+'%';tx.textContent='Chapter '+(i+1)+'/'+S.chapters.length+'...';
+if(S.chapters[i].content&&S.chapters[i].content.trim())continue;
+try{
+var pg=S.pagesPerChapter,wt=pg*250,prev='';
+for(var j=0;j<i;j++){if(S.chapters[j].content)prev+='Ch'+(j+1)+': '+S.chapters[j].content.substring(0,150)+'...\n'}
+var hi=S.humanize?'\nTulis natural. Variasikan kalimat.':'';
+var p='Tulis chapter ini (langsung konten, tanpa judul, tanpa markdown):\nBuku: '+S.title+' | Genre: '+S.genre+' | Tone: '+S.tone+'\nCh'+(i+1)+': '+S.chapters[i].title+'\nRingkasan: '+S.chapters[i].summary+'\nTarget: ~'+wt+' kata'+hi+'\n'+(prev?'Sebelumnya:\n'+prev:'');
+var res=await callAI(p,'Kamu penulis buku profesional berbahasa '+S.lang+'.'+hi);
+S.chapters[i].content=res.replace(/^```[a-z]*\n/i, '').replace(/\n```$/i, '');;ucl()
+}catch(e){toast('Ch'+(i+1)+' gagal: '+e.message,'error')}
+if(i<S.chapters.length-1)await new Promise(function(x){setTimeout(x,2000)})
+}
+fl.style.width='100%';tx.textContent='Selesai!';bt.disabled=false;
+setTimeout(function(){pr.style.display='none'},2000);ub();as();if(aIdx>=0)selCh(aIdx);toast('Semua chapter selesai!','success')
+}
+
+// ===== COVER =====
+function genCover(){
+if(!(S.title||'').trim()){toast('Isi judul dulu','warning');return}
+document.getElementById('coverLoad').style.display='block';document.getElementById('coverPrev').style.display='none';
+setTimeout(function(){
+var cv=document.createElement('canvas');cv.width=800;cv.height=1200;var ctx=cv.getContext('2d');
+var gc={'Romantis':['#ff6b6b','#ee5a24'],'Horor':['#2d3436','#636e72'],'Thriller':['#0c2461','#1e3799'],'Fantasi':['#6c5ce7','#a29bfe'],'Sci-Fi':['#00b894','#00cec9'],'Bisnis & Marketing':['#0984e3','#74b9ff'],'Self-Help':['#00b894','#55efc4'],'Edukasi':['#6c5ce7','#a29bfe'],'Teknologi':['#00cec9','#81ecec'],'Hobi':['#fd79a8','#e84393']};
+var cl=gc[S.genre]||['#8b5cf6','#6d28d9'];
+var gd=ctx.createLinearGradient(0,0,800,1200);gd.addColorStop(0,cl[0]);gd.addColorStop(1,cl[1]);ctx.fillStyle=gd;ctx.fillRect(0,0,800,1200);
+ctx.globalAlpha=.1;for(var i=0;i<8;i++){ctx.beginPath();ctx.arc(Math.random()*800,Math.random()*1200,50+Math.random()*150,0,Math.PI*2);ctx.fillStyle='#fff';ctx.fill()}
+ctx.globalAlpha=1;ctx.strokeStyle='rgba(255,255,255,.3)';ctx.lineWidth=4;ctx.strokeRect(40,40,720,1120);
+ctx.fillStyle='#fff';ctx.textAlign='center';ctx.font='bold 48px Inter,sans-serif';
+var words=(S.title||'').split(' '),line='',y=400;
+words.forEach(function(w){var test=line+w+' ';if(ctx.measureText(test).width>680&&line){ctx.fillText(line.trim(),400,y);y+=58;line=w+' '}else line=test});
+if(line)ctx.fillText(line.trim(),400,y);
+ctx.fillStyle='rgba(255,255,255,.5)';ctx.fillRect(200,y+30,400,3);
+ctx.font='300 26px Inter,sans-serif';ctx.fillStyle='rgba(255,255,255,.9)';ctx.fillText(S.author||'Penulis',400,y+80);
+if(S.genre){ctx.font='600 16px Inter,sans-serif';ctx.fillStyle='rgba(255,255,255,.7)';ctx.fillText(S.genre,400,1100)}
+S.coverData=cv.toDataURL('image/jpeg',.9);
+document.getElementById('coverImg').src=S.coverData;document.getElementById('coverPrev').style.display='block';document.getElementById('coverLoad').style.display='none';as();toast('Cover dibuat!','success')
+},500)}
+
+// ===== PLAGIARISM CHECK =====
+async function chkPlag(){
+var txt=document.getElementById('chContent').value.trim();
+if(!txt){toast('Tidak ada konten','warning');return}
+document.getElementById('plagLoad').style.display='block';document.getElementById('plagRes').innerHTML='';
+await new Promise(function(x){setTimeout(x,1500)});
+var sents=txt.split(/[.!?]+/).filter(function(s){return s.trim().length>10});
+var common=['dalam dunia ini','penting untuk diingat','sebagai kita ketahui','tidak dapat dipungkiri','pada dasarnya','seiring dengan perkembangan','di era modern ini','sudah tidak asing lagi','menjadi hal yang sangat','salah satu faktor utama'];
+var flagged=0;
+sents.forEach(function(s){var l=s.toLowerCase();common.forEach(function(p){if(l.includes(p))flagged++})});
+var score=Math.min(100,Math.round(flagged/Math.max(1,sents.length)*100));
+var col=score<20?'var(--success)':score<50?'var(--warning)':'var(--danger)';
+var lab=score<20?'Asli':score<50?'Meragukan':'Kemungkinan Plagiat';
+document.getElementById('plagRes').innerHTML='<div style="background:var(--card);border-radius:12px;padding:16px;text-align:center"><div style="font-size:48px;font-weight:800;color:'+col+'">'+score+'%</div><div style="font-weight:600;margin:4px 0;color:'+col+'">'+lab+'</div><div style="font-size:12px;color:var(--muted)">'+sents.length+' kalimat, '+flagged+' frasa umum</div></div><p style="font-size:11px;color:var(--muted);margin-top:8px">*Analisis lokal. Untuk cek mendalam gunakan layanan profesional.</p>';
+document.getElementById('plagLoad').style.display='none'
+}
+
+// ===== AI DETECT =====
+async function detAI(){
+var txt=document.getElementById('chContent').value.trim();
+if(!txt){toast('Tidak ada konten','warning');return}
+document.getElementById('aiLoad').style.display='block';document.getElementById('aiRes').innerHTML='';
+await new Promise(function(x){setTimeout(x,1500)});
+var sents=txt.split(/[.!?]+/).filter(function(s){return s.trim().length>10});
+var aiP=['penting untuk diingat','dalam bab ini','sebagai kesimpulan','pada akhirnya','perlu dicatat','dengan demikian','hal yang perlu diperhatikan','tidak lepas dari','memainkan peran penting','memberikan dampak yang signifikan'];
+var sc=0;sents.forEach(function(s){var l=s.toLowerCase();aiP.forEach(function(p){if(l.includes(p))sc++});var w=s.trim().split(/\s+/).length;if(w>15&&w<25)sc+=.3});
+var score=Math.min(100,Math.round(sc/Math.max(1,sents.length)*80+Math.random()*15));
+var col=score<30?'var(--success)':score<60?'var(--warning)':'var(--danger)';
+var lab=score<30?'Kemungkinan Manusia':score<60?'Tidak Yakin':'Kemungkinan AI';
+document.getElementById('aiRes').innerHTML='<div style="background:var(--card);border-radius:12px;padding:16px;text-align:center"><div style="font-size:48px;font-weight:800;color:'+col+'">'+score+'%</div><div style="font-weight:600;margin:4px 0;color:'+col+'">'+lab+'</div></div><div style="margin-top:12px;background:var(--card);border-radius:10px;padding:14px"><h4 style="font-size:13px;font-weight:600;margin-bottom:8px">Tips kurangi deteksi AI:</h4><ul style="font-size:12px;color:var(--muted);padding-left:16px;line-height:1.8"><li>Aktifkan Humanize sebelum menulis</li><li>Variasikan panjang kalimat</li><li>Tambahkan pengalaman pribadi</li><li>Gunakan "Tulis Ulang" dengan Humanize aktif</li></ul></div>';
+document.getElementById('aiLoad').style.display='none'
+}
+
+// ===== STATS =====
+function updStats(){
+var el=document.getElementById('statsDiv'),tw=0,tc=0,dc=0;
+S.chapters.forEach(function(c){if(c.content&&c.content.trim()){dc++;tw+=c.content.trim().split(/\s+/).length;tc+=c.content.length}});
+if(!tw){el.innerHTML='<p style="font-size:13px;color:var(--muted);text-align:center">Belum ada data.</p>';return}
+var ep=Math.round(tw/300),rt=Math.round(tw/200);
+el.innerHTML='<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">'+
+sc('📝','Kata',tw.toLocaleString())+sc('📄','Halaman',ep)+sc('⏱️','Baca',rt+' min')+sc('📑','Selesai',dc+'/'+S.chapters.length)+sc('🔤','Karakter',tc.toLocaleString())+sc('📊','Rata-rata',Math.round(tw/Math.max(1,dc))+' kata/ch')+'</div>'
+}
+function sc(i,l,v){return'<div style="background:var(--card);border-radius:10px;padding:14px;text-align:center"><div style="font-size:20px;margin-bottom:4px">'+i+'</div><div style="font-size:11px;color:var(--muted)">'+l+'</div><div style="font-size:18px;font-weight:700;color:var(--accent);margin-top:2px">'+v+'</div></div>'}
+
+// ===== TABS =====
+function swTab(t){document.getElementById('tPlag').className='tab-btn'+(t==='plag'?' active':'');document.getElementById('tAi').className='tab-btn'+(t==='ai'?' active':'');document.getElementById('tStat').className='tab-btn'+(t==='stats'?' active':'');document.getElementById('cPlag').className='tab-content'+(t==='plag'?' active':'');document.getElementById('cAi').className='tab-content'+(t==='ai'?' active':'');document.getElementById('cStats').className='tab-content'+(t==='stats'?' active':'');if(t==='stats')updStats()}
+
+// ===== EDITOR MODE =====
+function setMode(m){document.getElementById('editBtn').className='tab-btn'+(m==='edit'?' active':'');document.getElementById('prevBtn').className='tab-btn'+(m==='preview'?' active':'');document.getElementById('editArea').style.display=m==='edit'?'block':'none';document.getElementById('prevArea').style.display=m==='preview'?'block':'none';if(m==='preview')document.getElementById('prevArea').innerHTML=toMD(document.getElementById('chContent').value)}
+function toMD(t){if(!t)return'<p style="color:var(--muted)">Tidak ada konten.</p>';var h=esc(t);h=h.replace(/^### (.+)$/gm,'<h3>$1</h3>');h=h.replace(/^## (.+)$/gm,'<h2>$1</h2>');h=h.replace(/^# (.+)$/gm,'<h1>$1</h1>');h=h.replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>');h=h.replace(/\*(.+?)\*/g,'<em>$1</em>');h=h.replace(/`(.+?)`/g,'<code style="background:var(--card);padding:2px 6px;border-radius:4px">$1</code>');h=h.replace(/\n\n/g,'</p><p>');h=h.replace(/\n/g,'<br>');return'<p>'+h+'</p>'}
+function esc(s){var d=document.createElement('div');d.textContent=s;return d.innerHTML}
+
+// ===== WORD COUNT =====
+function uwc(){var t=document.getElementById('chContent').value.trim(),w=t?t.split(/\s+/).length:0;document.getElementById('wc').textContent=w.toLocaleString()+' kata'}
+function debWC(){if(wcTimer)clearTimeout(wcTimer);wcTimer=setTimeout(uwc,300)}
+
+// ===== BUTTONS =====
+function ub(){
+var ht=!!(S.title||'').trim(),hd=!!(S.desc||'').trim(),hc=!!(S.chapters||[]).length,hcon=(S.chapters||[]).some(function(c){return c.content&&c.content.trim()}),ha=aIdx>=0&&(S.chapters||[])[aIdx];
+document.getElementById('genOutBtn').disabled=!ht||!hd||writing;
+document.getElementById('coverBtn').disabled=!ht;
+document.getElementById('writeAllBtn').disabled=!hc||writing;
+document.getElementById('resetOutBtn').disabled=!hc||writing;
+document.getElementById('expHtml').disabled=!hcon;
+document.getElementById('expDoc').disabled=!hcon;
+document.getElementById('expPdf').disabled=!hcon;
+document.getElementById('writeBtn').disabled=!ha||writing;
+document.getElementById('rewBtn').disabled=!ha||writing;
+document.getElementById('saveBtn').disabled=!ha;
+document.getElementById('plagBtn').disabled=!ha;
+document.getElementById('aiBtn').disabled=!ha
+}
+
+// ===== EXPORT =====
+function expEbook(fmt){
+saveSilent();
+if(!S.chapters.some(function(c){return c.content&&c.content.trim()})){toast('Tidak ada konten','warning');return}
+var ch='';
+S.chapters.forEach(function(c){if(!c.content||!c.content.trim())return;ch+='<div style="page-break-before:always"><h2 style="font-size:24px;font-weight:700;margin-bottom:16px;color:#1e293b;border-bottom:2px solid #8b5cf6;padding-bottom:8px">'+esc(c.title)+'</h2><div style="font-size:15px;line-height:1.9;color:#334155;white-space:pre-wrap">'+esc(c.content)+'</div></div>'});
+var cov=S.coverData?'<div style="text-align:center;margin-bottom:40px"><img src="'+S.coverData+'" style="max-width:300px;border-radius:12px;box-shadow:0 8px 32px rgba(0,0,0,.2)"></div>':'';
+var full='<!DOCTYPE html><html><head><meta charset="UTF-8"><title>'+esc(S.title)+'</title><link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet"><style>*{margin:0;padding:0;box-sizing:border-box}body{font-family:Inter,sans-serif;max-width:700px;margin:0 auto;padding:40px 20px;background:#fff;color:#1e293b}@media print{body{padding:20px}}</style></head><body>'+cov+'<div style="text-align:center;margin-bottom:40px"><h1 style="font-size:36px;font-weight:800;margin-bottom:8px">'+esc(S.title)+'</h1><p style="font-size:16px;color:#64748b">oleh '+esc(S.author||'Penulis')+'</p>'+(S.desc?'<p style="font-size:13px;color:#94a3b8;margin-top:12px;max-width:500px;margin-left:auto;margin-right:auto">'+esc(S.desc)+'</p>':'')+'</div><hr style="border:none;border-top:1px solid #e2e8f0;margin:30px 0">'+ch+'<div style="text-align:center;margin-top:40px;padding:20px;color:#94a3b8;font-size:12px">Dibuat dengan PenZero AI</div></body></html>';
+if(fmt==='html'){dl(full,(S.title||'ebook')+'.html','text/html');toast('Export HTML berhasil!','success')}
+else{var b=new Blob(['\ufeff'+full],{type:'application/msword'});var u=URL.createObjectURL(b);var a=document.createElement('a');a.href=u;a.download=(S.title||'ebook')+'.doc';a.click();URL.revokeObjectURL(u);toast('Export DOC berhasil!','success')}
+}
+function expPdf(){saveSilent();if(!S.chapters.some(function(c){return c.content&&c.content.trim()})){toast('Tidak ada konten','warning');return}expEbook('html');setTimeout(function(){window.print()},500);toast('Pilih Save as PDF di dialog print','info')}
+function dl(c,n,t){var b=new Blob([c],{type:t}),u=URL.createObjectURL(b),a=document.createElement('a');a.href=u;a.download=n;a.click();URL.revokeObjectURL(u)}
+
+// ===== SAVE/LOAD PROJECT =====
+function saveProject(){saveSilent();dl(JSON.stringify(S),(S.title||'penzero')+'.json','application/json');toast('Project disimpan!','success')}
+function loadProject(ev){
+var f=ev.target.files[0];if(!f)return;
+var r=new FileReader();
+r.onload=function(e){
+try{var d=JSON.parse(e.target.result);Object.assign(S,d);aIdx=-1;syncUI();ub();document.getElementById('emptyHero').style.display='none';document.getElementById('centerMain').style.display='flex';
+if(S.coverData){document.getElementById('coverImg').src=S.coverData;document.getElementById('coverPrev').style.display='block'}
+toast('Project dibuka!','success');as()}catch(err){toast('File tidak valid','error')}
+};r.readAsText(f);ev.target.value=''
+}
+
+// ===== RESET =====
+function doReset(){showConfirm('Reset Semua Data?','Semua data akan dihapus permanen.',function(){LS.rem('pz_proj');LS.rem('pz_gk');LS.rem('pz_rk');location.reload()})}
+
+// ===== PANEL TOGGLE =====
+function togPanel(s){var el=document.getElementById(s==='left'?'leftPanel':'rightPanel');el.classList.toggle('collapsed')}
+
+// ===== IDE GENERATOR =====
+async function genIdeas(){
+var kw=document.getElementById('ideKeyword').value.trim();
+if(!kw){toast('Masukkan kata kunci','warning');return}
+var b=document.getElementById('ideGenBtn');b.disabled=true;
+document.getElementById('ideLoading').style.display='block';document.getElementById('ideResult').style.display='none';
+try{
+var st=document.getElementById('ideStyle').value;
+var p='Buat 3 ide buku berdasarkan kata kunci: "'+kw+'"\nFormat: '+st+'\nBahasa: '+S.lang+'\n\nUntuk setiap ide, berikan:\n1. Judul buku (menarik)\n2. Sinopsis (2-3 kalimat)\n3. Target pembaca (1 kalimat)\n\nFormat output:\n---IDE 1---\nJudul: ...\nSinopsis: ...\nTarget: ...\n---IDE 2---\n...';
+var res=await callAI(p,'Kamu kreator ide buku kreatif.');
+document.getElementById('ideResult').style.display='block';
+document.getElementById('ideResult').innerHTML='<div style="background:var(--card);border-radius:10px;padding:14px;font-size:13px;line-height:1.7;white-space:pre-wrap;max-height:300px;overflow-y:auto">'+esc(res)+'</div><p style="font-size:11px;color:var(--muted);margin-top:8px">Salin ide yang Anda suka ke form di panel kiri.</p>'
+}catch(e){toast('Gagal: '+e.message,'error')}
+document.getElementById('ideLoading').style.display='none';b.disabled=false
+}
+
+// ===== AUTOSAVE =====
+function as(){if(asTimer)clearTimeout(asTimer);asTimer=setTimeout(function(){LS.set('pz_proj',JSON.stringify(S))},1000)}
+
+// ===== INIT =====
+(function(){
+// Load theme
+var th=LS.get('pz_th');
+if(th){document.documentElement.setAttribute('data-theme',th);document.getElementById('themeBtn').textContent=th==='light'?'☀️':'🌙'}
+// Load project
+var saved=LS.get('pz_proj');
+if(saved){
+try{var d=JSON.parse(saved);Object.assign(S,d);
+if(S.chapters.length){document.getElementById('emptyHero').style.display='none';document.getElementById('centerMain').style.display='flex';if(S.coverData){document.getElementById('coverImg').src=S.coverData;document.getElementById('coverPrev').style.display='block'}}
+syncUI();ub()}catch(e){}
+}
+fillGenres();updBanner()
+})();
+</script>
+</body>
+</html>
