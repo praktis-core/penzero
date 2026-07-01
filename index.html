@@ -72,22 +72,11 @@ textarea{resize:vertical;min-height:80px}
 @media(max-width:1024px){.main-layout{flex-direction:column!important}.panel-left{width:100%!important;max-height:45vh}.panel-center{width:100%!important}.panel-right{width:100%!important}.tpb{display:flex!important}#mobTog{display:flex!important}.panel-left.collapsed,.panel-right.collapsed{display:none!important}}
 .tpb{display:none}
 select option{background:var(--card);color:var(--text)}
-
-.mic-btn{position:absolute;right:8px;top:50%;transform:translateY(-50%);background:none;border:none;font-size:18px;cursor:pointer;padding:4px 8px;border-radius:6px;transition:all .2s;color:var(--muted)}
-.mic-btn:hover{background:var(--glass-bg);color:var(--accent)}
-.mic-btn.recording{color:#ef4444;animation:pulse .6s infinite}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
-.input-wrap{position:relative}
-.ide-options{display:flex;flex-direction:column;gap:6px;margin-top:8px}
-.ide-opt{background:var(--glass-bg);border:1px solid var(--glass-border);border-radius:8px;padding:10px 14px;cursor:pointer;font-size:13px;transition:all .2s;text-align:left}
-.ide-opt:hover{border-color:var(--accent);background:rgba(139,92,246,.08);transform:translateX(4px)}
-.ide-opt .pick{float:right;color:var(--accent);font-weight:600;font-size:11px;opacity:0;transition:opacity .2s}
-.ide-opt:hover .pick{opacity:1}
 </style>
 </head>
 <body>
 
-<div id="apiBanner" data-i18n="api_banner" style="display:block;background:linear-gradient(135deg,#0d9488,#0891b2);color:#fff;padding:10px 12px;border-radius:8px;margin:8px 12px 0;font-size:12px;line-height:1.5;display:none">
+<div id="apiBanner" style="background:linear-gradient(135deg,#0d9488,#0891b2);color:#fff;padding:10px 12px;border-radius:8px;margin:8px 12px 0;font-size:12px;line-height:1.5;display:none">
 <strong>API Key Gratis!</strong> Daftar di <a href="https://console.groq.com/keys" target="_blank" style="color:#fff;text-decoration:underline">console.groq.com</a> lalu paste di <span onclick="openApikeyModal()" style="cursor:pointer;text-decoration:underline;font-weight:700">Keys</span>
 </div>
 
@@ -131,46 +120,33 @@ select option{background:var(--card);color:var(--text)}
 <button class="btn btn-accent btn-sm" onclick="saveApikey()">Simpan</button>
 </div></div></div>
 
-<!-- Ide Generator Modal -->
-<div class="modal-overlay" 
-<!-- AI Voice Dialog Modal -->
+<!-- AI Voice Modal -->
 <div class="modal-overlay" id="aiVoiceModal" style="display:none" onclick="if(event.target===this)this.style.display='none'">
 <div class="modal" style="max-width:550px">
 <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
 <h3 class="text-lg font-bold" style="color:var(--accent)">🎤 AI Voice Assistant</h3>
-<button onclick="stopAiVoice()" style="background:none;border:none;color:var(--muted);font-size:24px;cursor:pointer">&times;</button>
-</div>
-
-<div id="aiVoiceListen" style="text-align:center;padding:24px 0">
-<div id="aiMicBtn" onclick="toggleAiVoice()" style="width:80px;height:80px;border-radius:50%;background:var(--glass-bg);border:3px solid var(--accent);display:flex;align-items:center;justify-content:center;font-size:36px;cursor:pointer;margin:0 auto 16px;transition:all .3s">🎤</div>
-<p style="color:var(--muted);font-size:14px" id="aiVoiceHint">Klik mic lalu bicara...<br><span style="font-size:11px;color:#64748b">contoh: "Berikan 5 judul buku non-fiksi tentang dunia digital"</span></p>
-</div>
-
+<button onclick="document.getElementById('aiVoiceModal').style.display='none'" style="background:none;border:none;color:var(--muted);font-size:24px;cursor:pointer">&times;</button></div>
+<div id="aiVoiceListen" style="text-align:center;padding:20px 0"><div onclick="toggleAiVoice()" style="width:72px;height:72px;border-radius:50%;background:var(--glass-bg);border:3px solid var(--accent);display:flex;align-items:center;justify-content:center;font-size:32px;cursor:pointer;margin:0 auto 12px;transition:all .3s" id="aiMicBtn">🎤</div><p style="color:var(--muted);font-size:13px" id="aiVoiceHint">Klik mic lalu bicara...<br><span style="font-size:10px;color:#64748b">contoh: "Berikan 5 judul buku non-fiksi tentang dunia digital"</span></p></div>
 <div id="aiVoiceText" style="display:none;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:14px;font-size:14px;color:var(--text)"></div>
-
-<div id="aiVoiceLoading" style="display:none;text-align:center;padding:16px">
-<div class="spinner" style="margin:0 auto 8px"></div>
-<p style="font-size:13px;color:var(--muted)">AI sedang memproses...</p>
-</div>
-
-<div id="aiVoiceResults" style="display:none" class="ide-options"></div>
-
-<div style="display:flex;gap:10px;justify-content:flex-end;margin-top:16px">
-<button class="btn btn-outline btn-sm" onclick="stopAiVoice()">Tutup</button>
-<button class="btn btn-accent btn-sm" id="aiVoiceRetryBtn" style="display:none" onclick="resetAiVoice()">🔄 Coba Lagi</button>
-</div>
-</div></div>id="ideModal" style="display:none" onclick="if(event.target===this)this.style.display='none'">
+<div id="aiVoiceLoading" style="display:none;text-align:center;padding:16px"><div class="spinner" style="margin:0 auto 8px"></div><p style="font-size:13px;color:var(--muted)">AI sedang memproses...</p></div>
+<div id="aiVoiceResults" style="display:none;flex-direction:column;gap:6px;margin-top:8px"></div>
+<div style="display:flex;gap:10px;justify-content:flex-end;margin-top:12px"><button class="btn btn-outline btn-sm" onclick="closeAiVoice()">Tutup</button><button class="btn btn-accent btn-sm" id="aiVoiceRetryBtn" style="display:none" onclick="resetAiVoice()">🔄 Coba Lagi</button></div>
+</div></div>
+<!-- Ide Generator Modal -->
+<div class="modal-overlay" 
+id="ideModal" style="display:none" onclick="if(event.target===this)this.style.display='none'">
 <div class="modal" style="max-width:500px">
 <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
 <h3 class="text-lg font-bold" style="color:var(--accent)">💡 Generate Ide Buku</h3>
 <button onclick="document.getElementById('ideModal').style.display='none'" style="background:none;border:none;color:var(--muted);font-size:24px;cursor:pointer">&times;</button>
 </div>
-<label style="font-size:12px;color:var(--muted);display:block;margin-bottom:4px"data-i18n="ide_kw">Kata Kunci / Topik</label>
-<input id="ideKeyword" data-i18n="ide_kw_ph" data-i18n-type="placeholder" placeholder="Contoh: bisnis online, cerita horor..." style="margin-bottom:12px">
+<label style="font-size:12px;color:var(--muted);display:block;margin-bottom:4px">Kata Kunci / Topik</label>
+<input id="ideKeyword" placeholder="Contoh: bisnis online, cerita horor..." style="margin-bottom:12px">
 <label style="font-size:12px;color:var(--muted);display:block;margin-bottom:4px">Format</label>
 <select id="ideStyle" style="margin-bottom:16px"><option value="novel">Novel</option><option value="nonfiksi">Non-Fiksi</option><option value="bisnis">Bisnis</option><option value="selfhelp">Self-Help</option><option value="edukasi">Edukasi</option></select>
-<div <div id="ideLoading" style="display:none;text-align:center;padding:16px"><div class="spinner" style="margin:0 auto 8px"></div><p style="font-size:13px;color:var(--muted)" data-i18n="menghasilkan_ide">Menghasilkan ide...</p></div>
-<div id="ideOptions" style="display:none" class="ide-options"></div>e="display:flex;gap:10px;justify-content:flex-end">
+<div id="ideLoading" style="display:none;text-align:center;padding:16px"><div class="spinner" style="margin:0 auto 8px"></div><p style="font-size:13px;color:var(--muted)">Menghasilkan ide...</p></div>
+<div id="ideResult" style="display:none;margin-bottom:16px"></div>
+<div style="display:flex;gap:10px;justify-content:flex-end">
 <button class="btn btn-outline btn-sm" onclick="document.getElementById('ideModal').style.display='none'">Tutup</button>
 <!-- FIX: Ditambahkan atribut id="ideGenBtn" agar fungsi JS tidak menyebabkan error NullPointerException -->
 <button id="ideGenBtn" class="btn btn-accent btn-sm" onclick="genIdeas()">✨ Generate</button>
@@ -185,7 +161,7 @@ select option{background:var(--card);color:var(--text)}
 </div>
 <div style="padding:18px 24px;font-size:14px;line-height:1.7;color:#cbd5e1">
 <div style="background:#1e293b;border:1px solid #334155;border-radius:10px;padding:16px;margin-bottom:14px">
-<h4 style="color:#0d9488;margin:0 0 10px">🔑 Cara Pakai</h4>
+<h4 style="color:#0d9488;margin:0 0 10px" data-t="guide_how">🔑 Cara Pakai</h4>
 <p style="margin:6px 0"><strong>1.</strong> Klik <strong>🔑 Keys</strong> → pilih Groq → paste API key gratis → Simpan</p>
 <p style="margin:6px 0"><strong>2.</strong> Pilih template atau isi manual judul & sinopsis</p>
 <p style="margin:6px 0"><strong>3.</strong> Klik <strong>Generate Outline</strong></p>
@@ -193,7 +169,7 @@ select option{background:var(--card);color:var(--text)}
 <p style="margin:6px 0"><strong>5.</strong> Export ke HTML / DOC / PDF</p>
 </div>
 <div style="background:#1e293b;border:1px solid #334155;border-radius:10px;padding:16px;margin-bottom:14px">
-<h4 style="color:#0d9488;margin:0 0 10px">🌐 Setup Domain & Deploy</h4>
+<h4 style="color:#0d9488;margin:0 0 10px" data-t="guide_domain">🌐 Setup Domain & Deploy</h4>
 <p style="margin:4px 0;font-size:13px"><strong>1.</strong> Beli domain <code style="background:#334155;color:#5eead4;padding:1px 6px;border-radius:3px">penzero.my.id</code> di Domainesia (Rp9.900)</p>
 <p style="margin:4px 0;font-size:13px"><strong>2.</strong> Cloudflare → Websites → Add domain → Free</p>
 <p style="margin:4px 0;font-size:13px"><strong>3.</strong> Ganti NS Domainesia dgn NS Cloudflare</p>
@@ -202,7 +178,7 @@ select option{background:var(--card);color:var(--text)}
 </div>
 <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
 <div style="background:#1e293b;border:1px solid #334155;border-radius:10px;padding:14px">
-<h4 style="color:#0d9488;margin:0 0 8px">Tips</h4>
+<h4 style="color:#0d9488;margin:0 0 8px" data-t="guide_tips">Tips</h4>
 <p style="margin:4px 0;font-size:13px">• Sinopsis detail = hasil bagus<br>• Error 429? Tunggu 10 detik<br>• Aktifkan Humanize untuk teks natural</p>
 </div>
 <div style="background:#1e293b;border:1px solid #334155;border-radius:10px;padding:14px">
@@ -232,17 +208,17 @@ select option{background:var(--card);color:var(--text)}
 <header class="glass" style="border-bottom:1px solid var(--border);padding:10px 20px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;flex-wrap:wrap;gap:8px">
 <div style="display:flex;align-items:center;gap:12px">
 <div style="width:36px;height:36px;background:var(--accent);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px">📖</div>
-<div><h1 style="font-size:16px;font-weight:700;line-height:1.2" data-i18n="h_title">PenZero AI</h1><p style="font-size:11px;color:var(--muted)" data-i18n="h_sub">Tulis e-book dengan AI</p></div>
+<div><h1 style="font-size:16px;font-weight:700;line-height:1.2">PenZero AI</h1><p style="font-size:11px;color:var(--muted)" data-t="h_sub">Tulis e-book dengan AI</p></div>
 </div>
 <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
 <button class="btn btn-outline btn-sm" id="themeBtn" onclick="toggleTheme()">🌙</button>
-<button class="btn btn-outline btn-sm" id="langBtn" onclick="toggleLang()">🇬🇧 EN</button>
+<button class="btn btn-outline btn-sm" id="langBtn" onclick="toggleLang()" title="EN/ID">🇬🇧 EN</button>
 <button class="btn btn-outline btn-sm" onclick="openAiVoice()" style="background:rgba(139,92,246,.08);border-color:rgba(139,92,246,.3)">🎤 AI Voice</button>
 <button class="btn btn-outline btn-sm" onclick="openApikeyModal()">🔑 Keys</button>
-<button class="btn btn-outline btn-sm" onclick="saveProject()"data-i18n="h_save">💾 Simpan</button>
-<button class="btn btn-outline btn-sm" onclick="document.getElementById('fileInp').click()"data-i18n="h_open">📂 Buka</button>
+<button class="btn btn-outline btn-sm" onclick="saveProject()" data-t="h_save">💾 Simpan</button>
+<button class="btn btn-outline btn-sm" onclick="document.getElementById('fileInp').click()" data-t="h_open">📂 Buka</button>
 <input type="file" id="fileInp" accept=".json" style="display:none" onchange="loadProject(event)">
-<button class="btn btn-outline btn-sm" onclick="doReset()" data-i18n="h_reset">🔄 Reset</button>
+<button class="btn btn-outline btn-sm" onclick="doReset()" data-t="h_reset">🔄 Reset</button>
 <button class="btn btn-outline btn-sm" onclick="document.getElementById('guideModal').style.display='flex'">📘</button>
 <button class="btn btn-outline btn-sm" onclick="document.getElementById('privacyModal').style.display='flex'">🔒</button>
 </div>
@@ -255,10 +231,10 @@ select option{background:var(--card);color:var(--text)}
 <div class="panel-left panel" id="leftPanel" style="width:30%;min-width:220px;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:14px">
 <div class="tpb" style="justify-content:flex-end;margin-bottom:4px"><button class="btn btn-outline btn-sm" onclick="togPanel('left')">✕</button></div>
 <div style="background:var(--card);border-radius:12px;padding:16px">
-<h3 class="text-sm font-semibold mb-3" style="color:var(--accent)"data-i18n="lp_setup">Setup Buku</h3>
+<h3 class="text-sm font-semibold mb-3" style="color:var(--accent)"data-t="lp_setup">Setup Buku</h3>
 <div style="display:flex;gap:0;margin-bottom:12px;background:#0f172a;border-radius:8px;padding:3px">
-<button class="tab-btn active" style="flex:1;text-align:center" id="tFiksi" onclick="setBT('Fiksi')" data-i18n="lp_fiksi">Fiksi</button>
-<button class="tab-btn" style="flex:1;text-align:center" id="tNon" onclick="setBT('Non-Fiksi')" data-i18n="lp_nonfiksi">Non-Fiksi</button>
+<button class="tab-btn active" style="flex:1;text-align:center" id="tFiksi" onclick="setBT('Fiksi')">Fiksi</button>
+<button class="tab-btn" style="flex:1;text-align:center" id="tNon" onclick="setBT('Non-Fiksi')">Non-Fiksi</button>
 </div>
 <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:5px;margin-bottom:12px">
 <button class="btn btn-outline btn-sm" style="font-size:10px;padding:5px 6px;justify-content:center" onclick="selTpl('novel')">Novel</button>
@@ -271,25 +247,25 @@ select option{background:var(--card);color:var(--text)}
 <button class="btn btn-sm" style="width:100%;justify-content:center;background:rgba(245,158,11,.08);color:#fbbf24;border:1px solid rgba(245,158,11,.2);font-size:10px;padding:6px;margin-bottom:8px" onclick="document.getElementById('ideModal').style.display='flex';document.getElementById('ideKeyword').focus()">Generate Ide Buku</button>
 <label style="font-size:12px;color:var(--muted);display:block;margin-bottom:4px">Genre</label>
 <select id="genreSel" onchange="S.genre=this.value;as()"></select>
-<label style="font-size:12px;color:var(--muted);display:block;margin-top:10px;margin-bottom:4px"data-i18n="lp_title">Judul Buku</label>
-<input id="titleInp" data-i18n="lp_title_ph" data-i18n-type="placeholder" placeholder="Judul buku..." oninput="S.title=this.value;as();ub()"><button class="mic-btn" onclick="startVoice('titleInp',this)" title="Voice input">🎤</button></div>
-<label style="font-size:12px;color:var(--muted);display:block;margin-top:10px;margin-bottom:4px"data-i18n="lp_author">Penulis</label>
-<input id="authorInp" data-i18n="lp_author_ph" data-i18n-type="placeholder" placeholder="Nama penulis..." oninput="S.author=this.value;as()">
-<label style="font-size:12px;color:var(--muted);display:block;margin-top:10px;margin-bottom:4px"data-i18n="lp_target">Target Pembaca</label>
-<input id="targetInp" data-i18n="lp_target_ph" data-i18n-type="placeholder" placeholder="Remaja 15-18 tahun..." oninput="S.target=this.value;as()">
-<label style="font-size:12px;color:var(--muted);display:block;margin-top:10px;margin-bottom:4px"data-i18n="lp_sinopsis">Sinopsis</label>
-<textarea id="descInp" data-i18n="lp_sinopsis_ph" data-i18n-type="placeholder" placeholder="Tulis sinopsis..." oninput="S.desc=this.value;as();ub()" style="min-height:80px"></textarea><button class="mic-btn" onclick="startVoice('descInp',this)" title="Voice input" style="top:20px">🎤</button></div>
+<label style="font-size:12px;color:var(--muted);display:block;margin-top:10px;margin-bottom:4px"data-t="lp_title">Judul Buku</label>
+<input id="titleInp" placeholder="Judul buku..." oninput="S.title=this.value;as();ub()">
+<label style="font-size:12px;color:var(--muted);display:block;margin-top:10px;margin-bottom:4px"data-t="lp_author">Penulis</label>
+<input id="authorInp" placeholder="Nama penulis..." oninput="S.author=this.value;as()">
+<label style="font-size:12px;color:var(--muted);display:block;margin-top:10px;margin-bottom:4px"data-t="lp_target">Target Pembaca</label>
+<input id="targetInp" placeholder="Remaja 15-18 tahun..." oninput="S.target=this.value;as()">
+<label style="font-size:12px;color:var(--muted);display:block;margin-top:10px;margin-bottom:4px"data-t="lp_sinopsis">Sinopsis</label>
+<textarea id="descInp" placeholder="Tulis sinopsis..." oninput="S.desc=this.value;as();ub()" style="min-height:80px"></textarea>
 <div style="display:flex;gap:16px;margin-top:10px;flex-wrap:wrap">
-<label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer"><input type="checkbox" id="prologCk" onchange="S.hasProlog=this.checked;as();ucl();ub()" style="width:16px;height:16px;accent-color:var(--accent)"data-i18n="lp_prolog"> Prolog</label>
-<label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer"><input type="checkbox" id="epilogCk" onchange="S.hasEpilog=this.checked;as();ucl();ub()" style="width:16px;height:16px;accent-color:var(--accent)"data-i18n="lp_epilog"> Epilog</label>
+<label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer"><input type="checkbox" id="prologCk" onchange="S.hasProlog=this.checked;as();ucl();ub()" style="width:16px;height:16px;accent-color:var(--accent)"> Prolog</label>
+<label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer"><input type="checkbox" id="epilogCk" onchange="S.hasEpilog=this.checked;as();ucl();ub()" style="width:16px;height:16px;accent-color:var(--accent)"> Epilog</label>
 </div>
 <div style="display:flex;gap:10px;margin-top:10px">
-<div style="flex:1"><label style="font-size:12px;color:var(--muted);display:block;margin-bottom:4px"data-i18n="lp_chapter">Chapter</label><input type="number" id="chapCnt" min="1" max="30" value="5" onchange="S.chapterCount=+this.value||5;as()" style="text-align:center"></div>
-<div style="flex:1"><label style="font-size:12px;color:var(--muted);display:block;margin-bottom:4px"data-i18n="lp_hal">Hal/Ch</label><input type="number" id="pageCnt" min="1" max="50" value="5" onchange="S.pagesPerChapter=+this.value||5;as()" style="text-align:center"></div>
-<div style="flex:1"><label style="font-size:12px;color:var(--muted);display:block;margin-bottom:4px"data-i18n="lp_bahasa">Bahasa</label><select id="langSel" onchange="S.lang=this.value;as()"><option value="Indonesia">ID</option><option value="English">EN</option></select></div>
+<div style="flex:1"><label style="font-size:12px;color:var(--muted);display:block;margin-bottom:4px"data-t="lp_chapter">Chapter</label><input type="number" id="chapCnt" min="1" max="30" value="5" onchange="S.chapterCount=+this.value||5;as()" style="text-align:center"></div>
+<div style="flex:1"><label style="font-size:12px;color:var(--muted);display:block;margin-bottom:4px">Hal/Ch</label><input type="number" id="pageCnt" min="1" max="50" value="5" onchange="S.pagesPerChapter=+this.value||5;as()" style="text-align:center"></div>
+<div style="flex:1"><label style="font-size:12px;color:var(--muted);display:block;margin-bottom:4px">Bahasa</label><select id="langSel" onchange="S.lang=this.value;as()"><option value="Indonesia">ID</option><option value="English">EN</option></select></div>
 </div>
 <label style="font-size:12px;color:var(--muted);display:block;margin-top:10px;margin-bottom:4px">Tone</label>
-<select id="toneSel" onchange="S.tone=this.value;as()"><option data-i18n="lp_formal">Formal</option><option data-i18n="lp_santai">Santai/Kasual</option><option data-i18n="lp_puitis">Puitis</option><option data-i18n="lp_akademis">Akademis</option><option data-i18n="lp_story">Storytelling</option><option data-i18n="lp_persuasif">Persuasif</option></select>
+<select id="toneSel" onchange="S.tone=this.value;as()"><option>Formal</option><option>Santai/Kasual</option><option>Puitis</option><option>Akademis</option><option>Storytelling</option><option>Persuasif</option></select>
 <div style="display:flex;align-items:center;justify-content:space-between;margin-top:10px;padding:10px 14px;background:var(--glass-bg);border:1px solid var(--glass-border);border-radius:10px">
 <div><div style="font-weight:700;font-size:12px">Humanize AI</div><div style="font-size:10px;color:var(--muted)">Teks lebih natural</div></div>
 <label style="position:relative;display:inline-block;width:44px;height:24px;flex-shrink:0">
@@ -298,11 +274,11 @@ select option{background:var(--card);color:var(--text)}
 <span style="position:absolute;height:18px;width:18px;left:3px;bottom:3px;background:#fff;border-radius:50%;transition:.3s" id="humKnob"></span>
 </label>
 </div>
-<button class="btn btn-outline" style="width:100%;margin-top:14px;justify-content:center" id="coverBtn" onclick="genCover()" disableddata-i18n="lp_cover">Generate Cover</button>
+<button class="btn btn-outline" style="width:100%;margin-top:14px;justify-content:center" id="coverBtn" onclick="genCover()" disabled>Generate Cover</button>
 <div id="coverPrev" style="display:none;margin-top:10px;text-align:center">
 <img id="coverImg" src="" alt="Cover" style="max-width:100%;max-height:250px;border-radius:8px;box-shadow:0 4px 20px rgba(0,0,0,.5)">
 </div>
-<div id="coverLoad" style="display:none;text-align:center;padding:10px;margin-top:8px"><div class="spinner" style="margin:0 auto 8px"></div><p style="font-size:12px;color:var(--muted)"data-i18n="membuat_cover">Membuat cover...</p></div>
+<div id="coverLoad" style="display:none;text-align:center;padding:10px;margin-top:8px"><div class="spinner" style="margin:0 auto 8px"></div><p style="font-size:12px;color:var(--muted)">Membuat cover...</p></div>
 <button class="btn btn-accent" style="width:100%;margin-top:14px;justify-content:center" id="genOutBtn" onclick="genOutline()" disabled>Generate Outline</button>
 </div>
 <div style="background:var(--card);border-radius:12px;padding:16px;flex:1;overflow-y:auto;min-height:100px">
@@ -311,7 +287,7 @@ select option{background:var(--card);color:var(--text)}
 <span id="chapProg" style="font-size:11px;color:var(--muted)"></span>
 </div>
 <div id="chapList" style="display:flex;flex-direction:column;gap:4px;max-height:300px;overflow-y:auto">
-<p style="font-size:13px;color:var(--muted);text-align:center;padding:20px"data-i18n="lp_chap_empty">Generate outline dulu.</p>
+<p style="font-size:13px;color:var(--muted);text-align:center;padding:20px">Generate outline dulu.</p>
 </div>
 <div style="display:flex;gap:6px;margin-top:10px">
 <button id="writeAllBtn" class="btn btn-success btn-sm" style="flex:1;justify-content:center" onclick="writeAll()" disabled>Tulis Semua</button>
@@ -319,7 +295,7 @@ select option{background:var(--card);color:var(--text)}
 </div>
 <div id="waProg" style="display:none;margin-top:8px">
 <div class="progress-bar"><div class="progress-fill" id="waFill" style="width:0%"></div></div>
-<p style="font-size:11px;color:var(--muted);text-align:center;margin-top:4px" id="waText"data-i18n="proses">Memproses...</p>
+<p style="font-size:11px;color:var(--muted);text-align:center;margin-top:4px" id="waText">Memproses...</p>
 </div>
 </div>
 <button id="expHtml" class="btn btn-accent" style="width:100%;justify-content:center" onclick="expEbook('html')" disabled>Export HTML</button>
@@ -333,7 +309,7 @@ select option{background:var(--card);color:var(--text)}
 <div class="panel-center panel" style="flex:1;min-width:300px;display:flex;flex-direction:column;overflow-y:auto;border-left:none;border-right:none">
 <div id="emptyHero" class="empty-hero">
 <div class="icon">📖</div>
-<h2data-i18n="center_empty_title">Mulai Perjalanan Menulismu</h2>
+<h2>Mulai Perjalanan Menulismu</h2>
 <p class="sub">Tulis buku impianmu dengan bantuan AI.</p>
 <div class="cards">
 <div class="card" onclick="selTpl('novel')"><div class="ci">📖</div><div style="font-size:12px;font-weight:600">Novel</div></div>
@@ -406,6 +382,7 @@ select option{background:var(--card);color:var(--text)}
 </div>
 
 <script>
+var UI_LANG=localStorage.getItem("penzero_lang")||"id";var T={id:{h_sub:"Tulis e-book dengan AI",h_save:"💾 Simpan",h_open:"📂 Buka",h_reset:"🔄 Reset",lp_setup:"Setup Buku",lp_genide:"💡 Generate Ide Buku",lp_genre:"Genre",lp_title:"Judul Buku",lp_author:"Penulis",lp_target:"Target Pembaca",lp_sinopsis:"Sinopsis",lp_chapter:"Chapter",lp_hal:"Hal/Ch",lp_bahasa:"Bahasa",lp_tone:"Tone / Gaya Bahasa",lp_cover:"🎨 Generate Cover",lp_gen_outline:"✨ Generate Outline",lp_chap_list:"📑 Daftar Chapter",lp_chap_empty:"Generate outline dulu.",lp_write_all:"✍️ Tulis Semua",lp_reset_out:"🔄 Reset",lp_export_html:"📥 Export HTML",lp_export_doc:"📄 Export DOC (Word)",lp_export_pdf:"📕 Export PDF (Print)",center_title:"Mulai Perjalanan Menulismu",center_sub:"Tulis buku impianmu dengan bantuan AI.",center_new:"➕ Mulai dari Nol",center_or:"atau pilih template di atas",ed_write:"✍️ Tulis dengan AI",ed_rewrite:"🔄 Tulis Ulang",ed_edit:"✏️ Edit",ed_preview:"👁 Preview",proses:"Memproses...",membuat_cover:"Membuat cover...",ide_kw:"Kata Kunci / Topik",ide_gen:"✨ Generate",api_banner:'<strong>🔑 API Key Gratis!</strong> Daftar di <a href="https://console.groq.com/keys" target="_blank" style="color:#fff;text-decoration:underline">console.groq.com</a>',guide_how:"🔑 Cara Pakai",guide_domain:"🌐 Setup Domain & Deploy",guide_tips:"⚡ Tips",guide_faq:"❓ FAQ"}};T.en={h_sub:"Write e-books with AI",h_save:"💾 Save",h_open:"📂 Open",h_reset:"🔄 Reset",lp_setup:"Book Setup",lp_genide:"💡 Generate Book Idea",lp_genre:"Genre",lp_title:"Book Title",lp_author:"Author",lp_target:"Target Audience",lp_sinopsis:"Synopsis",lp_chapter:"Chapters",lp_hal:"Pg/Ch",lp_bahasa:"Language",lp_tone:"Tone / Style",lp_cover:"🎨 Generate Cover",lp_gen_outline:"✨ Generate Outline",lp_chap_list:"📑 Chapter List",lp_chap_empty:"Generate outline first.",lp_write_all:"✍️ Write All",lp_reset_out:"🔄 Reset",lp_export_html:"📥 Export HTML",lp_export_doc:"📄 Export DOC (Word)",lp_export_pdf:"📕 Export PDF (Print)",center_title:"Start Your Writing Journey",center_sub:"Write your dream book with AI.",center_new:"➕ Start from Scratch",center_or:"or pick a template above",ed_write:"✍️ Write with AI",ed_rewrite:"🔄 Rewrite",ed_edit:"✏️ Edit",ed_preview:"👁 Preview",proses:"Processing...",membuat_cover:"Generating cover...",ide_kw:"Keyword / Topic",ide_gen:"✨ Generate",api_banner:'<strong>🔑 Free API Key!</strong> Sign up at <a href="https://console.groq.com/keys" target="_blank" style="color:#fff;text-decoration:underline">console.groq.com</a>',guide_how:"🔑 How to Use",guide_domain:"🌐 Setup Domain & Deploy",guide_tips:"⚡ Tips",guide_faq:"❓ FAQ"};
 // FIX: Membungkus localStorage ke object "LS" yang safe/aman 
 // Mencegah error "SecurityError" yang membuat seluruh web/menu crash di browser terestriksi
 var LS = {
@@ -682,378 +659,7 @@ if(!S.chapters.some(function(c){return c.content&&c.content.trim()})){toast('Tid
 var ch='';
 S.chapters.forEach(function(c){if(!c.content||!c.content.trim())return;ch+='<div style="page-break-before:always"><h2 style="font-size:24px;font-weight:700;margin-bottom:16px;color:#1e293b;border-bottom:2px solid #8b5cf6;padding-bottom:8px">'+esc(c.title)+'</h2><div style="font-size:15px;line-height:1.9;color:#334155;white-space:pre-wrap">'+esc(c.content)+'</div></div>'});
 var cov=S.coverData?'<div style="text-align:center;margin-bottom:40px"><img src="'+S.coverData+'" style="max-width:300px;border-radius:12px;box-shadow:0 8px 32px rgba(0,0,0,.2)"></div>':'';
-var full='<!DOCTYPE html><html><head><meta charset="UTF-8"><title>'+esc(S.title)+'</title><link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet"><style>*{margin:0;padding:0;box-sizing:border-box}body{font-family:Inter,sans-serif;max-width:700px;margin:0 auto;padding:40px 20px;background:#fff;color:#1e293b}@media print{body{padding:20px}}</style></head><body>'+cov+'<div style="text-align:center;margin-bottom:40px"><h1 style="font-size:36px;font-weight:800;margin-bottom:8px">'+esc(S.title)+'</h1><p style="font-size:16px;color:#64748b">oleh '+esc(S.author||'Penulis')+'</p>'+(S.desc?'<p style="font-size:13px;color:#94a3b8;margin-top:12px;max-width:500px;margin-left:auto;margin-right:auto">'+esc(S.desc)+'</p>':'')+'</div><hr style="border:none;border-top:1px solid #e2e8f0;margin:30px 0">'+ch+'<div style="text-align:center;margin-top:40px;padding:20px;color:#94a3b8;font-size:12px">Dibuat dengan PenZero AI</div><script>
-// Bilingual System
-const L={id:{},en:{}};
-function t(k){return (L[UI_LANG]&&L[UI_LANG][k])||L.id[k]||k;}
-let UI_LANG=localStorage.getItem('penzero_lang')||'id';
-
-// All UI strings
-const STR={
-// Header
-h_title:'PenZero AI',h_sub:'Tulis e-book dengan AI',h_sub_en:'Write e-books with AI',
-h_keys:'🔑 Keys',h_save:'💾 Simpan',h_save_en:'💾 Save',
-h_open:'📂 Buka',h_open_en:'📂 Open',h_reset:'🔄 Reset',
-// Left Panel
-lp_setup:'Setup Buku',lp_setup_en:'Book Setup',
-lp_fiksi:'Fiksi',lp_fiksi_en:'Fiction',lp_nonfiksi:'Non-Fiksi',lp_nonfiksi_en:'Non-Fiction',
-lp_genide:'💡 Generate Ide Buku',lp_genide_en:'💡 Generate Book Idea',
-lp_genre:'Genre / Kategori',lp_genre_en:'Genre / Category',
-lp_title:'Judul Buku',lp_title_en:'Book Title',lp_title_ph:'Masukkan judul buku...',lp_title_ph_en:'Enter book title...',
-lp_author:'Penulis',lp_author_en:'Author',lp_author_ph:'Nama penulis...',lp_author_ph_en:'Author name...',
-lp_target:'Target Pembaca',lp_target_en:'Target Audience',lp_target_ph:'Contoh: Remaja 15-18 tahun...',lp_target_ph_en:'e.g. Young adults, professionals...',
-lp_sinopsis:'Sinopsis',lp_sinopsis_en:'Synopsis',lp_sinopsis_ph:'Tulis sinopsis buku...',lp_sinopsis_ph_en:'Write book synopsis...',
-lp_prolog:'Prolog',lp_prolog_en:'Prologue',lp_epilog:'Epilog',lp_epilog_en:'Epilogue',
-lp_chapter:'Chapter',lp_chapter_en:'Chapters',lp_hal:'Hal/Ch',lp_hal_en:'Pg/Ch',
-lp_bahasa:'Bahasa',lp_bahasa_en:'Language',lp_id:'Indonesia',lp_en:'English',
-lp_tone:'Tone / Gaya Bahasa',lp_tone_en:'Tone / Style',
-lp_formal:'Formal',lp_santai:'Santai/Kasual',lp_santai_en:'Casual',
-lp_puitis:'Puitis',lp_puitis_en:'Poetic',lp_akademis:'Akademis',lp_akademis_en:'Academic',
-lp_story:'Storytelling',lp_persuasif:'Persuasif',lp_persuasif_en:'Persuasive',
-lp_humanize:'✨ Humanize AI',lp_humanize_sub:'Teks lebih natural',lp_humanize_sub_en:'More natural text',
-lp_cover:'🎨 Generate Cover',lp_cover_en:'🎨 Generate Cover',
-lp_gen_outline:'✨ Generate Outline',
-lp_chap_list:'📑 Daftar Chapter',lp_chap_list_en:'📑 Chapter List',
-lp_chap_empty:'Belum ada chapter. Generate outline dulu.',lp_chap_empty_en:'No chapters yet. Generate outline first.',
-lp_write_all:'✍️ Tulis Semua',lp_write_all_en:'✍️ Write All',
-lp_reset_out:'🔄 Reset Outline',lp_reset_out_en:'🔄 Reset Outline',
-lp_export_html:'📥 Export HTML',lp_export_doc:'📄 Export DOC (Word)',lp_export_pdf:'📕 Export PDF (Print)',
-// Center
-center_empty_title:'Mulai Perjalanan Menulismu',center_empty_title_en:'Start Your Writing Journey',
-center_empty_sub:'Tulis buku impianmu dengan bantuan AI. Dari ide sampai terbit, semua di sini.',center_empty_sub_en:'Write your dream book with AI. From idea to publishing, all in one place.',
-center_new:'➕ Mulai dari Nol',center_new_en:'➕ Start from Scratch',
-center_need_idea:'💡 Butuh Ide? Generate di Sini',center_need_idea_en:'💡 Need an Idea? Generate Here',
-center_or:'atau pilih template di atas untuk langsung mulai',center_or_en:'or pick a template above to start',
-center_empty:'Pilih atau generate chapter untuk mulai menulis...',center_empty_en:'Select or generate a chapter to start writing...',
-// Editor
-ed_chapter:'Bab',ed_chapter_en:'Chapter',ed_chap_title_ph:'Judul chapter...',ed_chap_title_ph_en:'Chapter title...',
-ed_words:'0 kata',ed_words_en:'0 words',
-ed_write:'✍️ Tulis dengan AI',ed_write_en:'✍️ Write with AI',
-ed_rewrite:'🔄 Tulis Ulang',ed_rewrite_en:'🔄 Rewrite',
-ed_save:'💾 Simpan',ed_save_btn:'💾 Save',
-ed_illust:'🎨 Ilustrasi AI',ed_illust_en:'🎨 AI Illustration',
-ed_sub:'📑 Sub-Bab',ed_sub_en:'📑 Sub-Chapter',ed_add_sub:'+ Tambah Sub-Bab',ed_add_sub_en:'+ Add Sub-Chapter',
-ed_edit:'✏️ Edit',ed_preview:'👁 Preview',
-ed_insert:'📥 Sisipkan',ed_insert_en:'📥 Insert',
-ed_gen_illust:'Membuat ilustrasi...',ed_gen_illust_en:'Generating illustration...',
-// Right Panel
-rp_plag:'🔍 Plagiarism',rp_ai:'🤖 AI Detect',rp_stats:'📊 Stats',rp_stats_en:'📊 Statistics',
-rp_check:'🔍 Periksa Chapter Ini',rp_check_en:'🔍 Check This Chapter',
-rp_doc:'📄 Cek Dokumen',rp_doc_en:'📄 Check Document',
-// API Modal
-api_title:'🔑 Konfigurasi AI',api_title_en:'🔑 AI Configuration',
-api_gemini_ph:'Paste Gemini API Key...',api_groq_ph:'Paste Groq API Key (gsk_xxxx...)',
-api_gemini_info:'Gratis di <a href="https://aistudio.google.com/app/apikeys" target="_blank" style="color:var(--accent)">Google AI Studio</a>',
-api_groq_info:'<strong style="color:#166534">100% Gratis!</strong> Buka <a href="https://console.groq.com/keys" target="_blank" style="color:var(--accent);font-weight:700">console.groq.com</a> → Login → Create Key → Copy',
-api_close:'Tutup',api_close_en:'Close',api_save:'Simpan',api_save_en:'Save',
-api_banner:'<strong>🔑 API Key Gratis!</strong> Daftar 3 menit di <a href="https://console.groq.com/keys" target="_blank" style="color:#fff;text-decoration:underline">console.groq.com</a> — tanpa kartu kredit.<br>Paste key di <span onclick="openApikeyModal()" style="cursor:pointer;text-decoration:underline;font-weight:700">🔑 Keys</span>',
-api_banner_en:'<strong>🔑 Free API Key!</strong> Sign up in 3 min at <a href="https://console.groq.com/keys" target="_blank" style="color:#fff;text-decoration:underline">console.groq.com</a> — no credit card.<br>Paste key in <span onclick="openApikeyModal()" style="cursor:pointer;text-decoration:underline;font-weight:700">🔑 Keys</span>',
-// Guide
-guide_title:'📘 Panduan Lengkap',guide_title_en:'📘 Complete Guide',
-guide_how:'🔑 Cara Pakai — 4 Langkah',guide_how_en:'🔑 How to Use — 4 Steps',
-guide_step1:'<strong>1.</strong> Dapatkan <strong>Groq API Key GRATIS</strong> di <a href="https://console.groq.com/keys" target="_blank" style="color:var(--accent)">console.groq.com</a> (3 menit, tanpa kartu kredit)',
-guide_step1_en:'<strong>1.</strong> Get a <strong>FREE Groq API Key</strong> at <a href="https://console.groq.com/keys" target="_blank" style="color:var(--accent)">console.groq.com</a> (3 min, no credit card)',
-guide_step2:'<strong>2.</strong> Klik <strong>🔑 Keys</strong> → pilih Groq → paste → Simpan',
-guide_step2_en:'<strong>2.</strong> Click <strong>🔑 Keys</strong> → select Groq → paste → Save',
-guide_step3:'<strong>3.</strong> Pilih template, isi judul & sinopsis → <strong>Generate Outline</strong>',
-guide_step3_en:'<strong>3.</strong> Pick a template, fill title & synopsis → <strong>Generate Outline</strong>',
-guide_step4:'<strong>4.</strong> Klik chapter → <strong>Tulis dengan AI</strong> → Export',
-guide_step4_en:'<strong>4.</strong> Click chapter → <strong>Write with AI</strong> → Export',
-guide_domain:'🌐 Setup Domain & Deploy',
-guide_d1:'<strong>1.</strong> Beli domain <code style="background:#334155;color:#5eead4;padding:1px 6px;border-radius:3px">penzero.my.id</code> di Domainesia (Rp9.900)',
-guide_d1_en:'<strong>1.</strong> Buy domain at Namecheap/GoDaddy (\$10-15/year)',
-guide_d2:'<strong>2.</strong> Cloudflare → Websites → Add domain → Free',
-guide_d3:'<strong>3.</strong> Ganti NS Domainesia dgn NS Cloudflare',
-guide_d3_en:'<strong>3.</strong> Point nameservers to Cloudflare',
-guide_d4:'<strong>4.</strong> Workers → penzero → Custom Domain',
-guide_d5:'<strong>5.</strong> Drag <code style="background:#334155;color:#5eead4;padding:1px 6px;border-radius:3px">index.html</code> → Deploy',
-guide_tips:'⚡ Tips',guide_tips_en:'⚡ Tips',
-guide_t1:'• Sinopsis detail = hasil bagus<br>• Error 429? Tunggu 10 detik<br>• Aktifkan Humanize untuk teks natural',
-guide_t1_en:'• Detailed synopsis = better results<br>• Error 429? Wait 10 seconds<br>• Enable Humanize for natural text',
-guide_faq:'❓ FAQ',
-guide_f1:'• Key aman di browser Anda<br>• 30 req/menit gratis<br>• Tanpa kartu kredit',
-guide_f1_en:'• Key stays in your browser<br>• 30 req/min free<br>• No credit card needed',
-// Privacy
-priv_title:'🔒 Privasi',priv_title_en:'🔒 Privacy',
-priv_text:'<strong>PenZero AI</strong> berjalan 100% di browser. Tidak ada server, tidak ada database.<br><br><strong>Data Anda</strong><br>Semua data di localStorage. Tidak pernah dikirim ke server.<br><br><strong>API Key</strong><br>Key dikirim langsung ke Google/Groq API. Kami tidak punya akses.<br><br><strong>Hapus Data</strong><br>Klik Reset atau hapus localStorage via F12.',
-priv_text_en:'<strong>PenZero AI</strong> runs 100% in your browser. No server, no database.<br><br><strong>Your Data</strong><br>All data in localStorage. Never sent anywhere.<br><br><strong>API Key</strong><br>Key sent directly to Google/Groq API. We have no access.<br><br><strong>Delete Data</strong><br>Click Reset or clear localStorage via F12.',
-// Toasts
-toast_saved:'Proyek disimpan!',toast_saved_en:'Project saved!',
-toast_loaded:'Proyek dibuka!',toast_loaded_en:'Project loaded!',
-toast_reset:'Direset!',toast_reset_en:'Reset!',
-toast_gen_outline:'Outline berhasil dibuat!',toast_gen_outline_en:'Outline generated!',
-toast_write_chapter:'Chapter berhasil ditulis!',toast_write_chapter_en:'Chapter written!',
-toast_all_written:'Semua chapter selesai!',toast_all_written_en:'All chapters done!',
-toast_copied:'Disalin!',toast_copied_en:'Copied!',
-// Misc
-proses:'Memproses...',proses_en:'Processing...',
-membuat_cover:'Membuat cover...',membuat_cover_en:'Generating cover...',
-menghasilkan_ide:'Menghasilkan ide...',menghasilkan_ide_en:'Generating ideas...',
-ide_kw:'Kata Kunci / Topik',ide_kw_en:'Keyword / Topic',ide_kw_ph:'Contoh: bisnis online, cerita horor...',ide_kw_ph_en:'e.g. online business, horror story...',
-ide_format:'Format',ide_style:'Gaya',ide_style_en:'Style',
-ide_gen:'✨ Generate',
-};
-
-// Build L objects
-Object.keys(STR).forEach(k=>{L.id[k]=STR[k];L.en[k]=STR[k+'_en']||STR[k];});
-
-function applyLang(){
-  UI_LANG=localStorage.getItem('penzero_lang')||'id';
-  document.documentElement.lang=UI_LANG==='en'?'en':'id';
-  const btn=document.getElementById('langBtn');
-  if(btn)btn.textContent=UI_LANG==='en'?'🇮🇩 ID':'🇬🇧 EN';
-  
-  // Apply to all data-i18n elements
-  document.querySelectorAll('[data-i18n]').forEach(el=>{
-    const k=el.getAttribute('data-i18n');
-    const v=t(k);
-    if(el.tagName==='INPUT'||el.tagName==='TEXTAREA'){
-      if(el.getAttribute('data-i18n-type')==='placeholder')el.placeholder=v;
-    }else{
-      el.innerHTML=v;
-    }
-  });
-}
-
-function toggleLang(){
-  UI_LANG=UI_LANG==='id'?'en':'id';
-  localStorage.setItem('penzero_lang',UI_LANG);
-  applyLang();
-}
-
-document.addEventListener('DOMContentLoaded',()=>{
-  applyLang();
-});
-</script>
-
-<script>
-// Voice input
-let recognition=null;
-let currentVoiceTarget=null;
-let currentMicBtn=null;
-
-function startVoice(targetId,btn){
-  if(!('webkitSpeechRecognition' in window)&&!('SpeechRecognition' in window)){
-    alert(UI_LANG==='en'?'Voice not supported in this browser':'Browser tidak mendukung voice input');
-    return;
-  }
-  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
-  if(!recognition){
-    recognition=new SR();
-    recognition.lang='id-ID';
-    recognition.interimResults=false;
-    recognition.continuous=false;
-    recognition.onresult=(e)=>{
-      const text=e.results[0][0].transcript;
-      const el=document.getElementById(currentVoiceTarget);
-      if(el){
-        const old=el.value;
-        el.value=old+(old?' ':'')+text;
-        el.dispatchEvent(new Event('input'));
-      }
-      if(currentMicBtn)currentMicBtn.classList.remove('recording');
-      currentMicBtn=null;
-    };
-    recognition.onerror=()=>{
-      if(currentMicBtn)currentMicBtn.classList.remove('recording');
-      currentMicBtn=null;
-    };
-    recognition.onend=()=>{
-      if(currentMicBtn)currentMicBtn.classList.remove('recording');
-      currentMicBtn=null;
-    };
-  }
-  if(currentMicBtn&&currentMicBtn!==btn){
-    currentMicBtn.classList.remove('recording');
-  }
-  if(currentMicBtn===btn){
-    recognition.stop();
-    btn.classList.remove('recording');
-    currentMicBtn=null;
-    return;
-  }
-  currentVoiceTarget=targetId;
-  currentMicBtn=btn;
-  btn.classList.add('recording');
-  // Set lang based on UI
-  recognition.lang=UI_LANG==='en'?'en-US':'id-ID';
-  recognition.start();
-}
-
-// Enhanced idea generator with multi-option output
-async function selectIdea(title,synopsis){
-  document.getElementById('titleInp').value=title;
-  S.title=title;
-  document.getElementById('descInp').value=synopsis;
-  S.desc=synopsis;
-  as();ub();
-  document.getElementById('ideModal').style.display='none';
-  toast(UI_LANG==='en'?'Idea applied!':'Ide diterapkan!','success');
-}
-</script>
-
-<script>
-// AI Voice System
-let aiVoiceRec=null;
-let aiVoiceListening=false;
-
-function openAiVoice(){
-  document.getElementById('aiVoiceModal').style.display='flex';
-  resetAiVoice();
-}
-
-function stopAiVoice(){
-  if(aiVoiceRec){try{aiVoiceRec.stop();}catch(e){}}
-  aiVoiceListening=false;
-  document.getElementById('aiMicBtn').textContent='🎤';
-  document.getElementById('aiMicBtn').style.background='var(--glass-bg)';
-  document.getElementById('aiVoiceModal').style.display='none';
-}
-
-function resetAiVoice(){
-  if(aiVoiceRec){try{aiVoiceRec.stop();}catch(e){}}
-  aiVoiceListening=false;
-  document.getElementById('aiVoiceListen').style.display='block';
-  document.getElementById('aiVoiceText').style.display='none';
-  document.getElementById('aiVoiceLoading').style.display='none';
-  document.getElementById('aiVoiceResults').style.display='none';
-  document.getElementById('aiVoiceRetryBtn').style.display='none';
-  document.getElementById('aiMicBtn').textContent='🎤';
-  document.getElementById('aiMicBtn').style.background='var(--glass-bg)';
-}
-
-function toggleAiVoice(){
-  if(aiVoiceListening){stopListening();return;}
-  
-  if(!('webkitSpeechRecognition' in window)&&!('SpeechRecognition' in window)){
-    alert('Voice input not supported in this browser. Use Chrome.');
-    return;
-  }
-  
-  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
-  aiVoiceRec=new SR();
-  aiVoiceRec.lang=UI_LANG==='en'?'en-US':'id-ID';
-  aiVoiceRec.interimResults=true;
-  aiVoiceRec.continuous=false;
-  
-  aiVoiceRec.onstart=()=>{
-    aiVoiceListening=true;
-    document.getElementById('aiMicBtn').textContent='🔴';
-    document.getElementById('aiMicBtn').style.background='rgba(239,68,68,.15)';
-    document.getElementById('aiMicBtn').style.borderColor='#ef4444';
-    document.getElementById('aiVoiceHint').innerHTML='Mendengarkan... 🎙️<br><span style="font-size:11px;color:#64748b">Bicara sekarang</span>';
-  };
-  
-  aiVoiceRec.onresult=(e)=>{
-    let text='';
-    for(let i=e.resultIndex;i<e.results.length;i++){
-      text+=e.results[i][0].transcript;
-    }
-    document.getElementById('aiVoiceText').style.display='block';
-    document.getElementById('aiVoiceText').textContent=text;
-  };
-  
-  aiVoiceRec.onend=()=>{
-    aiVoiceListening=false;
-    document.getElementById('aiMicBtn').textContent='🎤';
-    document.getElementById('aiMicBtn').style.background='var(--glass-bg)';
-    document.getElementById('aiMicBtn').style.borderColor='var(--accent)';
-    document.getElementById('aiVoiceHint').textContent='Memproses...';
-    document.getElementById('aiVoiceListen').style.display='none';
-    
-    // Auto-submit to AI
-    const text=document.getElementById('aiVoiceText').textContent.trim();
-    if(text)askAi(text);
-  };
-  
-  aiVoiceRec.onerror=(e)=>{
-    aiVoiceListening=false;
-    document.getElementById('aiMicBtn').textContent='🎤';
-    document.getElementById('aiMicBtn').style.background='var(--glass-bg)';
-    document.getElementById('aiMicBtn').style.borderColor='var(--accent)';
-    document.getElementById('aiVoiceHint').textContent=UI_LANG==='en'?'Try again...':'Coba lagi...';
-  };
-  
-  aiVoiceRec.start();
-}
-
-function stopListening(){
-  if(aiVoiceRec){aiVoiceRec.stop();}
-  aiVoiceListening=false;
-}
-
-async function askAi(question){
-  document.getElementById('aiVoiceLoading').style.display='block';
-  document.getElementById('aiVoiceResults').style.display='none';
-  
-  const key=localStorage.getItem('groq_apikey')||localStorage.getItem('penzero_groq_key')||localStorage.getItem('gemini_apikey')||'';
-  if(!key){
-    document.getElementById('aiVoiceLoading').style.display='none';
-    document.getElementById('aiVoiceHint').textContent=UI_LANG==='en'?'Please set API key first (🔑 Keys)':'Isi API key dulu (🔑 Keys)';
-    return;
-  }
-  
-  const isGroq=key.startsWith('gsk_');
-  const prompt=UI_LANG==='en'
-    ?'Based on this request: "'+question+'", generate 5 creative book title ideas with one-sentence synopsis each. Format as JSON: [{"title":"...","synopsis":"..."}]. Make titles catchy and marketable. Only return the JSON array, nothing else.'
-    :'Berdasarkan permintaan: "'+question+'", buatkan 5 ide judul buku kreatif dengan sinopsis satu kalimat. Format JSON: [{"title":"...","synopsis":"..."}]. Buat judul menarik dan marketable. Hanya kembalikan JSON array.';
-  
-  try{
-    let resp,data;
-    if(isGroq){
-      resp=await fetch('https://api.groq.com/openai/v1/chat/completions',{
-        method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+key},
-        body:JSON.stringify({model:'llama-3.3-70b-versatile',messages:[{role:'user',content:prompt}],temperature:0.9,max_tokens:800})
-      });
-      data=await resp.json();
-    } else {
-      resp=await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-lite:generateContent?key='+key,{
-        method:'POST',headers:{'Content-Type':'application/json'},
-        body:JSON.stringify({contents:[{parts:[{text:prompt}]}]})
-      });
-      data=await resp.json();
-    }
-    
-    let text=isGroq?data.choices[0].message.content:data.candidates[0].content.parts[0].text;
-    if(!text)throw new Error('Empty response');
-    
-    // Parse JSON
-    let ideas=[];
-    const jsonMatch=text.match(/[[sS]*]/);
-    if(jsonMatch){
-      try{ideas=JSON.parse(jsonMatch[0]);}catch(e){}
-    }
-    if(!ideas.length){
-      const lines=text.split('
-').filter(l=>l.trim().length>10);
-      ideas=lines.slice(0,5).map(l=>({title:l.replace(/^d+[.)s-]+/,'').replace(/**/g,'').trim(),synopsis:''}));
-    }
-    
-    document.getElementById('aiVoiceLoading').style.display='none';
-    const results=document.getElementById('aiVoiceResults');
-    results.innerHTML=ideas.map((i,idx)=>'<div class="ide-opt" onclick="applyAiIdea('+JSON.stringify(i.title).replace(/"/g,'&quot;')+','+JSON.stringify(i.synopsis||'').replace(/"/g,'&quot;')+')"><strong>'+(idx+1)+'. '+i.title+'</strong>'+(i.synopsis?'<br><span style="font-size:12px;color:var(--muted)">'+i.synopsis+'</span>':'')+'<span class="pick">→ Pilih</span></div>').join('');
-    results.style.display='flex';
-    document.getElementById('aiVoiceRetryBtn').style.display='inline-flex';
-    document.getElementById('aiVoiceHint').textContent='';
-  }catch(e){
-    document.getElementById('aiVoiceLoading').style.display='none';
-    document.getElementById('aiVoiceHint').textContent=UI_LANG==='en'?'Failed. Check API key and try again.':'Gagal. Cek API key dan coba lagi.';
-    document.getElementById('aiVoiceRetryBtn').style.display='inline-flex';
-  }
-}
-
-function applyAiIdea(title,synopsis){
-  document.getElementById('titleInp').value=title;
-  if(typeof S!=='undefined')S.title=title;
-  document.getElementById('descInp').value=synopsis||'';
-  if(typeof S!=='undefined')S.desc=synopsis||'';
-  if(typeof as==='function')as();
-  if(typeof ub==='function')ub();
-  document.getElementById('aiVoiceModal').style.display='none';
-  if(typeof toast==='function')toast(UI_LANG==='en'?'Idea applied!':'Judul diterapkan!','success');
-}
-</script>
-</body></html>';
+var full='<!DOCTYPE html><html><head><meta charset="UTF-8"><title>'+esc(S.title)+'</title><link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet"><style>*{margin:0;padding:0;box-sizing:border-box}body{font-family:Inter,sans-serif;max-width:700px;margin:0 auto;padding:40px 20px;background:#fff;color:#1e293b}@media print{body{padding:20px}}</style></head><body>'+cov+'<div style="text-align:center;margin-bottom:40px"><h1 style="font-size:36px;font-weight:800;margin-bottom:8px">'+esc(S.title)+'</h1><p style="font-size:16px;color:#64748b">oleh '+esc(S.author||'Penulis')+'</p>'+(S.desc?'<p style="font-size:13px;color:#94a3b8;margin-top:12px;max-width:500px;margin-left:auto;margin-right:auto">'+esc(S.desc)+'</p>':'')+'</div><hr style="border:none;border-top:1px solid #e2e8f0;margin:30px 0">'+ch+'<div style="text-align:center;margin-top:40px;padding:20px;color:#94a3b8;font-size:12px">Dibuat dengan PenZero AI</div></body></html>';
 if(fmt==='html'){dl(full,(S.title||'ebook')+'.html','text/html');toast('Export HTML berhasil!','success')}
 else{var b=new Blob(['\ufeff'+full],{type:'application/msword'});var u=URL.createObjectURL(b);var a=document.createElement('a');a.href=u;a.download=(S.title||'ebook')+'.doc';a.click();URL.revokeObjectURL(u);toast('Export DOC berhasil!','success')}
 }
@@ -1111,6 +717,64 @@ syncUI();ub()}catch(e){}
 }
 fillGenres();updBanner()
 })();
+
+function t(k){return T[UI_LANG]&&T[UI_LANG][k]||T.id[k]||k;}
+function applyLang(){
+  UI_LANG=localStorage.getItem("penzero_lang")||"id";
+  var btn=document.getElementById("langBtn");
+  if(btn)btn.textContent=UI_LANG==="en"?"🇮🇩 ID":"🇬🇧 EN";
+  document.documentElement.lang=UI_LANG==="en"?"en":"id";
+  var els=document.querySelectorAll("[data-t]");
+  for(var i=0;i<els.length;i++){
+    var el=els[i],k=el.getAttribute("data-t"),v=t(k);
+    if(el.tagName==="INPUT"||el.tagName==="TEXTAREA")el.placeholder=v;
+    else el.innerHTML=v;
+  }
+  var b=document.getElementById("apiBanner");
+  if(b)b.innerHTML=t("api_banner");
+}
+function toggleLang(){
+  UI_LANG=UI_LANG==="id"?"en":"id";
+  localStorage.setItem("penzero_lang",UI_LANG);
+  applyLang();
+}
+setTimeout(applyLang,50);
+
+// ==== AI VOICE ====
+var aiVR=null,aiVL=false;
+function openAiVoice(){document.getElementById("aiVoiceModal").style.display="flex";resetAiVoice();}
+function closeAiVoice(){if(aiVR)try{aiVR.stop()}catch(e){};aiVL=false;document.getElementById("aiVoiceModal").style.display="none";}
+function resetAiVoice(){if(aiVR)try{aiVR.stop()}catch(e){};aiVL=false;document.getElementById("aiVoiceListen").style.display="block";document.getElementById("aiVoiceText").style.display="none";document.getElementById("aiVoiceLoading").style.display="none";document.getElementById("aiVoiceResults").style.display="none";document.getElementById("aiVoiceRetryBtn").style.display="none";document.getElementById("aiMicBtn").textContent="🎤";}
+function toggleAiVoice(){
+  if(aiVL){if(aiVR)aiVR.stop();aiVL=false;document.getElementById("aiMicBtn").textContent="🎤";return}
+  var SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!SR){alert("Voice not supported. Use Chrome.");return}
+  aiVR=new SR();aiVR.lang=UI_LANG==="en"?"en-US":"id-ID";aiVR.interimResults=true;
+  aiVR.onstart=function(){aiVL=true;document.getElementById("aiMicBtn").textContent="🔴";document.getElementById("aiMicBtn").style.borderColor="#ef4444";document.getElementById("aiVoiceHint").innerHTML="Mendengarkan...<br><span style=\'font-size:10px\'>Bicara sekarang</span>";}
+  aiVR.onresult=function(e){var t="";for(var i=e.resultIndex;i<e.results.length;i++)t+=e.results[i][0].transcript;document.getElementById("aiVoiceText").style.display="block";document.getElementById("aiVoiceText").textContent=t;}
+  aiVR.onend=function(){aiVL=false;document.getElementById("aiMicBtn").textContent="🎤";document.getElementById("aiMicBtn").style.borderColor="var(--accent)";document.getElementById("aiVoiceListen").style.display="none";var t=document.getElementById("aiVoiceText").textContent.trim();if(t)askAiVoice(t);}
+  aiVR.start();
+}
+async function askAiVoice(q){
+  document.getElementById("aiVoiceLoading").style.display="block";
+  var k=localStorage.getItem("groq_apikey")||localStorage.getItem("penzero_groq_key")||localStorage.getItem("gemini_apikey")||"";
+  if(!k){document.getElementById("aiVoiceLoading").style.display="none";alert("Isi API key dulu (🔑 Keys)");return}
+  var p="Berdasarkan permintaan: \""+q+"\", buatkan 5 ide judul buku kreatif dengan sinopsis. Format JSON: [{\"title\":\"...\",\"synopsis\":\"...\"}].";
+  try{
+    var u,r;if(k.startsWith("gsk_")){r=await fetch("https://api.groq.com/openai/v1/chat/completions",{method:"POST",headers:{"Content-Type":"application/json",Authorization:"Bearer "+k},body:JSON.stringify({model:"llama-3.3-70b-versatile",messages:[{role:"user",content:p}],temperature:0.9,max_tokens:800})});var d=await r.json();u=d.choices[0].message.content}
+    else{r=await fetch("https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-lite:generateContent?key="+k,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({contents:[{parts:[{text:p}]}]})});var g=await r.json();u=g.candidates[0].content.parts[0].text}
+    var ideas=[],m=u.match(/\[[\s\S]*\]/);if(m){try{ideas=JSON.parse(m[0])}catch(e){}}
+    if(!ideas.length){var ls=u.split("\n").filter(function(l){return l.trim().length>10});ideas=ls.slice(0,5).map(function(l){return{title:l.replace(/^\d+[\.\)\s-]+/,"").replace(/\*\*/g,"").trim(),synopsis:""}})}
+    document.getElementById("aiVoiceLoading").style.display="none";var res=document.getElementById("aiVoiceResults");res.innerHTML=ideas.map(function(i,idx){return '<div class="ide-opt" onclick="applyAiIdea(\''+idx+'\')\"><strong>'+(idx+1)+'. '+i.title+'</strong>'+(i.synopsis?'<br><span style="font-size:12px;color:var(--muted)">'+i.synopsis+'</span>':'')+'<span class="pick">→ Pilih</span></div>'}).join("");res.style.display="flex";document.getElementById("aiVoiceRetryBtn").style.display="inline-flex";window._aiVoiceIdeas=ideas
+  }catch(e){document.getElementById("aiVoiceLoading").style.display="none";document.getElementById("aiVoiceRetryBtn").style.display="inline-flex";alert("Gagal generate. Cek API key.")}
+}
+function applyAiIdea(idx){
+  var i=window._aiVoiceIdeas[idx];if(!i)return;
+  document.getElementById("titleInp").value=i.title;S.title=i.title;
+  document.getElementById("descInp").value=i.synopsis||"";S.desc=i.synopsis||"";
+  as();ub();document.getElementById("aiVoiceModal").style.display="none";
+  toast("Ide diterapkan!","success");
+}
 </script>
 </body>
 </html>
