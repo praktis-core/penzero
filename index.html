@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>PenZero AI</title>
-<link rel="icon" href="https://www.image2url.com/r2/default/images/1782931698793-bf5e109a-8ef4-4d8a-9129-6dae0d6b7214.png">
+<link rel="icon" type="image/png" href="https://www.image2url.com/r2/default/images/1782931698793-bf5e109a-8ef4-4d8a-9129-6dae0d6b7214.png">
 <script src="https://cdn.tailwindcss.com"></script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
@@ -138,19 +138,6 @@ select option{background:var(--card);color:var(--text)}
 <button class="btn btn-accent btn-sm" onclick="saveApikey()">Simpan</button>
 </div></div></div>
 
-<!-- AI Voice Modal -->
-<div class="modal-overlay" id="aiVoiceModal" style="display:none" onclick="if(event.target===this)this.style.display='none'">
-<div class="modal" style="max-width:550px">
-<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
-<h3 class="text-lg font-bold" style="color:var(--accent)">🎤 AI Voice Assistant</h3>
-<button onclick="closeAiVoice()" style="background:none;border:none;color:var(--muted);font-size:24px;cursor:pointer">&times;</button></div>
-<div id="aiVoiceListen" style="text-align:center;padding:20px 0"><div onclick="toggleAiVoice()" style="width:72px;height:72px;border-radius:50%;background:var(--glass-bg);border:3px solid var(--accent);display:flex;align-items:center;justify-content:center;font-size:32px;cursor:pointer;margin:0 auto 12px" id="aiMicBtn">🎤</div><p style="color:var(--muted);font-size:13px" id="aiVoiceHint">Klik mic lalu bicara...</p></div>
-<div id="aiVoiceText" style="display:none;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:14px;font-size:14px;color:var(--text)"></div>
-<div id="aiVoiceLoading" style="display:none;text-align:center;padding:16px"><div class="spinner" style="margin:0 auto 8px"></div><p style="font-size:13px;color:var(--muted)">AI sedang memproses...</p></div>
-<div id="aiVoiceResults" style="display:none;flex-direction:column;gap:6px;margin-top:8px"></div>
-<div style="display:flex;gap:10px;justify-content:flex-end;margin-top:12px"><button class="btn btn-outline btn-sm" onclick="closeAiVoice()">Tutup</button><button class="btn btn-accent btn-sm" id="aiVoiceRetryBtn" style="display:none" onclick="resetAiVoice()">🔄 Coba Lagi</button></div>
-</div></div>
-
 <!-- Ide Generator Modal -->
 <div class="modal-overlay" id="ideModal" style="display:none" onclick="if(event.target===this)this.style.display='none'">
 <div class="modal" style="max-width:500px">
@@ -178,44 +165,14 @@ select option{background:var(--card);color:var(--text)}
 <button onclick="document.getElementById('guideModal').style.display='none'" style="background:none;border:none;color:var(--muted);font-size:24px;cursor:pointer">&times;</button>
 </div>
 <div style="padding:18px 24px;font-size:14px;line-height:1.7;color:#cbd5e1">
-
 <div style="background:#1e293b;border:1px solid #334155;border-radius:10px;padding:16px;margin-bottom:14px">
-<h4 style="color:#0d9488;margin:0 0 10px">🔑 1. Dapatkan API Key Groq (GRATIS)</h4>
-<p style="margin:4px 0;font-size:13px;color:#cbd5e1">PenZero butuh API key untuk generate konten AI. Groq <strong>gratis selamanya</strong>, tanpa kartu kredit.</p>
-<p style="margin:6px 0;font-size:12.5px;color:#94a3b8">• Buka <a href="https://console.groq.com" target="_blank" style="color:var(--accent)">console.groq.com</a> → Login dengan Google/GitHub</p>
-<p style="margin:4px 0;font-size:12.5px;color:#94a3b8">• Klik <strong>Create API Key</strong> → Copy (<code style="background:#334155;color:#5eead4;padding:1px 6px;border-radius:3px">gsk_xxxx</code>)</p>
-<p style="margin:8px 0 0;font-size:11.5px;color:#f59e0b">⚠️ Simpan key baik-baik — hanya muncul satu kali!</p>
+<h4 style="color:#0d9488;margin:0 0 10px">🔑 Cara Pakai</h4>
+<p style="margin:6px 0"><strong>1.</strong> Klik <strong>🔑 Keys</strong> → pilih Groq → paste API key gratis → Simpan</p>
+<p style="margin:6px 0"><strong>2.</strong> Pilih template atau isi manual judul & sinopsis</p>
+<p style="margin:6px 0"><strong>3.</strong> Klik <strong>Generate Outline</strong></p>
+<p style="margin:6px 0"><strong>4.</strong> Klik chapter → <strong>Tulis dengan AI</strong></p>
+<p style="margin:6px 0"><strong>5.</strong> Export ke HTML / DOC / PDF</p>
 </div>
-
-<div style="background:#1e293b;border:1px solid #334155;border-radius:10px;padding:16px;margin-bottom:14px">
-<h4 style="color:#0d9488;margin:0 0 10px">⚙️ 2. Masukkan API Key</h4>
-<p style="margin:4px 0;font-size:13px;color:#94a3b8">• Klik <strong>🔑 Keys</strong> di header → pilih <strong>Groq (Gratis)</strong></p>
-<p style="margin:4px 0;font-size:13px;color:#94a3b8">• Paste key → <strong>Simpan</strong> → key tersimpan aman di browser</p>
-</div>
-
-<div style="background:#1e293b;border:1px solid #334155;border-radius:10px;padding:16px;margin-bottom:14px">
-<h4 style="color:#0d9488;margin:0 0 10px">📋 3. Setup Buku</h4>
-<p style="margin:4px 0;font-size:13px;color:#94a3b8">• Pilih <strong>template</strong> di panel kiri — atau gunakan 🎤 <strong>AI Voice</strong></p>
-<p style="margin:4px 0;font-size:13px;color:#94a3b8">• Isi <strong>Judul</strong>, <strong>Penulis</strong>, dan <strong>Sinopsis</strong></p>
-<p style="margin:4px 0;font-size:13px;color:#94a3b8">• Atur chapter, halaman, tone, dan aktifkan <strong>Humanize AI</strong></p>
-<p style="margin:4px 0;font-size:13px;color:#94a3b8"><strong>✨ Kunci: semakin detail sinopsis = semakin bagus hasil AI</strong></p>
-</div>
-
-<div style="background:#1e293b;border:1px solid #334155;border-radius:10px;padding:16px;margin-bottom:14px">
-<h4 style="color:#0d9488;margin:0 0 10px">✍️ 4. Generate & Tulis</h4>
-<p style="margin:4px 0;font-size:13px;color:#94a3b8">• <strong>Generate Outline</strong> — AI buat daftar isi otomatis</p>
-<p style="margin:4px 0;font-size:13px;color:#94a3b8">• Klik chapter → <strong>Tulis dengan AI</strong> atau <strong>Tulis Semua</strong></p>
-<p style="margin:4px 0;font-size:13px;color:#94a3b8">• <strong>Tulis Ulang</strong> chapter yang kurang puas</p>
-<p style="margin:4px 0;font-size:13px;color:#94a3b8">• <strong>Sub-Bab</strong> untuk pendalaman topik</p>
-</div>
-
-<div style="background:#1e293b;border:1px solid #334155;border-radius:10px;padding:16px;margin-bottom:14px">
-<h4 style="color:#0d9488;margin:0 0 10px">💾 5. Simpan & Export</h4>
-<p style="margin:4px 0;font-size:13px;color:#94a3b8">• <strong>Auto-save</strong> — progres tidak hilang saat tutup browser</p>
-<p style="margin:4px 0;font-size:13px;color:#94a3b8">• <strong>Simpan Proyek</strong> & <strong>Buka Proyek</strong> — backup/restore file JSON</p>
-<p style="margin:4px 0;font-size:13px;color:#94a3b8">• <strong>Export HTML</strong> / <strong>DOC</strong> / <strong>PDF</strong> — siap publish ke platform manapun</p>
-</div>
-
 <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
 <div style="background:#1e293b;border:1px solid #334155;border-radius:10px;padding:14px">
 <h4 style="color:#0d9488;margin:0 0 8px">Tips</h4>
@@ -247,14 +204,13 @@ select option{background:var(--card);color:var(--text)}
 <!-- HEADER -->
 <header class="glass" style="border-bottom:1px solid var(--border);padding:10px 20px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;flex-wrap:wrap;gap:8px">
 <div style="display:flex;align-items:center;gap:12px">
-<img src="https://www.image2url.com/r2/default/images/1782931698793-bf5e109a-8ef4-4d8a-9129-6dae0d6b7214.png" alt="PenZero" style="width:36px;height:36px;border-radius:10px;object-fit:contain">
+<div style="width:36px;height:36px;background:var(--accent);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px">📖</div>
 <div><h1 style="font-size:16px;font-weight:700;line-height:1.2">PenZero AI</h1><p style="font-size:11px;color:var(--muted)">Tulis e-book dengan AI</p></div>
 </div>
 <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
+<button class="btn btn-outline btn-sm" id="langBtn" onclick="toggleLang()" style="margin-right:4px">🇬🇧 EN</button>
 <div class="theme-picker"><div class="theme-dot" id="themeColorDot" style="background:var(--accent)" onclick="document.getElementById('themeDrop').classList.toggle('show')"></div><div class="theme-drop" id="themeDrop"><div class="tr" onclick="setColorTheme('purple')"><div class="sw" style="background:#8b5cf6"></div>Ungu</div><div class="tr" onclick="setColorTheme('ocean')"><div class="sw" style="background:#3b82f6"></div>Biru</div><div class="tr" onclick="setColorTheme('teal')"><div class="sw" style="background:#14b8a6"></div>Teal</div><div class="tr" onclick="setColorTheme('amber')"><div class="sw" style="background:#f59e0b"></div>Amber</div><div class="tr" onclick="setColorTheme('rose')"><div class="sw" style="background:#f43f5e"></div>Rose</div><div class="tr" onclick="setColorTheme('slate')"><div class="sw" style="background:#64748b"></div>Slate</div></div></div>
 <button class="btn btn-outline btn-sm" id="themeBtn" onclick="toggleTheme()">🌙</button>
-<button class="btn btn-outline btn-sm" id="langBtn" onclick="toggleLang()" title="EN/ID">🇬🇧 EN</button>
-<button class="btn btn-outline btn-sm" onclick="openAiVoice()" style="background:rgba(139,92,246,.08);border-color:rgba(139,92,246,.3)">🎤 AI Voice</button>
 <button class="btn btn-outline btn-sm" onclick="openApikeyModal()">🔑 Keys</button>
 <button class="btn btn-outline btn-sm" onclick="saveProject()">💾 Simpan</button>
 <button class="btn btn-outline btn-sm" onclick="document.getElementById('fileInp').click()">📂 Buka</button>
@@ -758,23 +714,13 @@ syncUI();ub()}catch(e){}
 fillGenres();updBanner()
 })();
 
-// ==== I18N ====
-var UI_LANG=localStorage.getItem("penzero_lang")||"id";var T={id:{h_sub:"Tulis e-book dengan AI"},en:{h_sub:"Write e-books with AI"}};
+// === I18N ===
+var UI_LANG=localStorage.getItem("penzero_lang")||"id";
+var T={id:{h_sub:"Tulis e-book dengan AI",guide_title:"Panduan PenZero",step1:"1. Dapatkan API Key",step2:"2. Masukkan API Key",step3:"3. Setup Buku",step4:"4. Generate & Tulis",step5:"5. Simpan & Export",tips:"Tips & FAQ"},en:{h_sub:"Write e-books with AI",guide_title:"PenZero Guide",step1:"1. Get API Key",step2:"2. Enter API Key",step3:"3. Setup Book",step4:"4. Generate & Write",step5:"5. Save & Export",tips:"Tips & FAQ"}};
 function t(k){return T[UI_LANG]&&T[UI_LANG][k]||T.id[k]||k;}
-function applyLang(){UI_LANG=localStorage.getItem("penzero_lang")||"id";var b=document.getElementById("langBtn");if(b)b.textContent=UI_LANG==="en"?"🇮🇩 ID":"🇬🇧 EN";var s=document.querySelector("p[data-t='h_sub']");if(s)s.textContent=t("h_sub");var bb=document.getElementById("apiBanner");if(bb)bb.style.display=UI_LANG==="id"?"block":"none";}
-function toggleLang(){UI_LANG=UI_LANG==="id"?"en":"id";localStorage.setItem("penzero_lang",UI_LANG);applyLang();}
-setTimeout(applyLang,100);
+function toggleLang(){var l=localStorage.getItem("penzero_lang")||"id";l=l==="en"?"id":"en";localStorage.setItem("penzero_lang",l);applyLang();}
+function applyLang(){UI_LANG=localStorage.getItem("penzero_lang")||"id";var b=document.getElementById("langBtn");if(b)b.textContent=UI_LANG==="en"?"🇮🇩 ID":"🇬🇧 EN";var s=document.querySelector("p[data-t='h_sub']");if(s)s.textContent=t("h_sub");}
 
-// ==== AI VOICE ====
-var aiVR=null,aiVL=false;
-function openAiVoice(){document.getElementById("aiVoiceModal").style.display="flex";resetAiVoice();}
-function closeAiVoice(){if(aiVR)try{aiVR.stop()}catch(e){};aiVL=false;document.getElementById("aiVoiceModal").style.display="none";}
-function resetAiVoice(){if(aiVR)try{aiVR.stop()}catch(e){};aiVL=false;document.getElementById("aiVoiceListen").style.display="block";document.getElementById("aiVoiceText").style.display="none";document.getElementById("aiVoiceLoading").style.display="none";document.getElementById("aiVoiceResults").style.display="none";document.getElementById("aiVoiceRetryBtn").style.display="none";document.getElementById("aiMicBtn").textContent="🎤";}
-function toggleAiVoice(){if(aiVL){if(aiVR)aiVR.stop();aiVL=false;document.getElementById("aiMicBtn").textContent="🎤";return}var SR=window.SpeechRecognition||window.webkitSpeechRecognition;if(!SR){alert("Voice not supported. Use Chrome.");return}aiVR=new SR();aiVR.lang="id-ID";aiVR.interimResults=true;aiVR.onstart=function(){aiVL=true;document.getElementById("aiMicBtn").textContent="🔴";document.getElementById("aiMicBtn").style.borderColor="#ef4444";document.getElementById("aiVoiceHint").innerHTML="Mendengarkan..."};aiVR.onresult=function(e){var t="";for(var i=e.resultIndex;i<e.results.length;i++)t+=e.results[i][0].transcript;document.getElementById("aiVoiceText").style.display="block";document.getElementById("aiVoiceText").textContent=t};aiVR.onend=function(){aiVL=false;document.getElementById("aiMicBtn").textContent="🎤";document.getElementById("aiMicBtn").style.borderColor="var(--accent)";document.getElementById("aiVoiceListen").style.display="none";var t=document.getElementById("aiVoiceText").textContent.trim();if(t)askAiVoice(t)};aiVR.start()}
-async function askAiVoice(q){document.getElementById("aiVoiceLoading").style.display="block";var k=localStorage.getItem("groq_apikey")||localStorage.getItem("gemini_apikey")||"";if(!k){document.getElementById("aiVoiceLoading").style.display="none";alert("Isi API key dulu (🔑 Keys)");return}var p="Buatkan 5 ide judul buku kreatif dengan sinopsis berdasarkan: \""+q+"\". Format JSON: [{\"title\":\"...\",\"synopsis\":\"...\"}].";try{var u,r;if(k.startsWith("gsk_")){r=await fetch("https://api.groq.com/openai/v1/chat/completions",{method:"POST",headers:{"Content-Type":"application/json",Authorization:"Bearer "+k},body:JSON.stringify({model:"llama-3.3-70b-versatile",messages:[{role:"user",content:p}],temperature:0.9,max_tokens:800})});var d=await r.json();u=d.choices[0].message.content}else{r=await fetch("https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-lite:generateContent?key="+k,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({contents:[{parts:[{text:p}]}]})});var g=await r.json();u=g.candidates[0].content.parts[0].text}var ideas=[],m=u.match(/\[[\s\S]*\]/);if(m){try{ideas=JSON.parse(m[0])}catch(e){}}if(!ideas.length){var ls=u.split("\n").filter(function(l){return l.trim().length>10});ideas=ls.slice(0,5).map(function(l){return{title:l.replace(/^\d+[\.\)\s-]+/,"").replace(/\*\*/g,"").trim(),synopsis:""}})}document.getElementById("aiVoiceLoading").style.display="none";var res=document.getElementById("aiVoiceResults");res.innerHTML=ideas.map(function(i,idx){return '<div class="ide-opt" onclick="applyAiIdea('+idx+')"><strong>'+(idx+1)+'. '+i.title+'</strong>'+(i.synopsis?'<br><span style="font-size:12px;color:var(--muted)">'+i.synopsis+'</span>':'')+'<span class="pick">→ Pilih</span></div>'}).join("");res.style.display="flex";document.getElementById("aiVoiceRetryBtn").style.display="inline-flex";window._aiVoiceIdeas=ideas}catch(e){document.getElementById("aiVoiceLoading").style.display="none";document.getElementById("aiVoiceRetryBtn").style.display="inline-flex";alert("Gagal. Cek API key.")}}
-function applyAiIdea(idx){var i=window._aiVoiceIdeas[idx];if(!i)return;document.getElementById("titleInp").value=i.title;S.title=i.title;document.getElementById("descInp").value=i.synopsis||"";S.desc=i.synopsis||"";as();ub();document.getElementById("aiVoiceModal").style.display="none";toast("Ide diterapkan!","success")}
-
-// Theme colors
 var THEMES=["purple","ocean","teal","amber","rose","slate"];
 function setColorTheme(t){
   document.documentElement.setAttribute("data-theme",t);
@@ -786,6 +732,7 @@ function setColorTheme(t){
   var saved=localStorage.getItem("penzero_color")||"purple";
   document.documentElement.setAttribute("data-theme",saved);
   document.addEventListener("click",function(e){var d=document.getElementById("themeDrop");if(d&&d.classList.contains("show")&&!d.contains(e.target)&&e.target!==document.getElementById("themeColorDot"))d.classList.remove("show");});
+  applyLang();
 })();
 </script>
 </body>
