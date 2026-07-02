@@ -4,8 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>PenZero AI</title>
-<link rel="icon" type="image/png" href="https://www.image2url.com/r2/default/images/1782931698793-bf5e109a-8ef4-4d8a-9129-6dae0d6b7214.png">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 400'%3E%3Cdefs%3E%3ClinearGradient id='b' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%230f172a'/%3E%3Cstop offset='100%25' stop-color='%230c1222'/%3E%3C/linearGradient%3E%3ClinearGradient id='p' x1='0%25' y1='0%25' x2='0%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%233b82f6'/%3E%3Cstop offset='100%25' stop-color='%2306b6d4'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='400' height='400' rx='80' fill='url(%23b)'/%3E%3Cg stroke='url(%23p)' stroke-width='6' stroke-linecap='round' fill='none'%3E%3Cline x1='140' y1='100' x2='140' y2='300'/%3E%3Cpath d='M 127 100 L 153 100 L 140 70' stroke-width='5'/%3E%3Ccircle cx='210' cy='160' r='65'/%3E%3Cpath d='M 140 100 Q 140 95 210 95'/%3E%3C/g%3E%3Ccircle cx='140' cy='65' r='4' fill='%2306b6d4' opacity='0.8'/%3E%3Ccircle cx='140' cy='62' r='2' fill='%23e2e8f0' opacity='0.4'/%3E%3Cline x1='148' y1='260' x2='148' y2='300' stroke='%2394a3b8' stroke-width='3' stroke-linecap='round' opacity='0.5'/%3E%3C/svg%3E">
 <script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 :root{--bg:#04080f;--panel:#0b1221;--card:#111827;--border:#1e293b;--text:#e2e8f0;--muted:#94a3b8;--accent:#8b5cf6;--accent2:#7c3aed;--success:#10b981;--warning:#f59e0b;--danger:#ef4444;--glass-bg:rgba(139,92,246,.06);--glass-border:rgba(139,92,246,.15);--glass-hover:rgba(139,92,246,.15)}
@@ -161,26 +162,26 @@ select option{background:var(--card);color:var(--text)}
 <div class="modal-overlay" id="guideModal" style="display:none" onclick="if(event.target===this)this.style.display='none'">
 <div class="modal" style="max-width:600px;max-height:80vh;overflow-y:auto;padding:0">
 <div style="padding:18px 24px;border-bottom:1px solid var(--border);font-weight:700;color:var(--accent);font-size:17px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;background:var(--panel);z-index:1;border-radius:16px 16px 0 0">
-📘 Panduan Lengkap
+<span data-t="guide_title">📘 Panduan Lengkap</span>
 <button onclick="document.getElementById('guideModal').style.display='none'" style="background:none;border:none;color:var(--muted);font-size:24px;cursor:pointer">&times;</button>
 </div>
 <div style="padding:18px 24px;font-size:14px;line-height:1.7;color:#cbd5e1">
 <div style="background:#1e293b;border:1px solid #334155;border-radius:10px;padding:16px;margin-bottom:14px">
-<h4 style="color:#0d9488;margin:0 0 10px">🔑 Cara Pakai</h4>
-<p style="margin:6px 0"><strong>1.</strong> Klik <strong>🔑 Keys</strong> → pilih Groq → paste API key gratis → Simpan</p>
-<p style="margin:6px 0"><strong>2.</strong> Pilih template atau isi manual judul & sinopsis</p>
-<p style="margin:6px 0"><strong>3.</strong> Klik <strong>Generate Outline</strong></p>
-<p style="margin:6px 0"><strong>4.</strong> Klik chapter → <strong>Tulis dengan AI</strong></p>
-<p style="margin:6px 0"><strong>5.</strong> Export ke HTML / DOC / PDF</p>
+<h4 style="color:#0d9488;margin:0 0 10px">🔑 <span data-t="guide_step1">Cara Pakai</span></h4>
+<p style="margin:6px 0"><strong>1.</strong> <span data-t="guide_how1">Klik 🔑 Keys → pilih Groq → paste API key gratis → Simpan</span></p>
+<p style="margin:6px 0"><strong>2.</strong> <span data-t="guide_how2">Pilih template atau isi manual judul & sinopsis</span></p>
+<p style="margin:6px 0"><strong>3.</strong> <span data-t="guide_how3">Klik Generate Outline</span></p>
+<p style="margin:6px 0"><strong>4.</strong> <span data-t="guide_how4">Klik chapter → Tulis dengan AI</span></p>
+<p style="margin:6px 0"><strong>5.</strong> <span data-t="guide_how5">Export ke HTML / DOC / PDF</span></p>
 </div>
 <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
 <div style="background:#1e293b;border:1px solid #334155;border-radius:10px;padding:14px">
-<h4 style="color:#0d9488;margin:0 0 8px">Tips</h4>
-<p style="margin:4px 0;font-size:13px">• Sinopsis detail = hasil bagus<br>• Error 429? Tunggu 10 detik<br>• Aktifkan Humanize untuk teks natural</p>
+<h4 style="color:#0d9488;margin:0 0 8px" data-t="guide_tips_title">Tips</h4>
+<p style="margin:4px 0;font-size:13px" data-t="guide_tips">• Sinopsis detail = hasil bagus<br>• Error 429? Tunggu 10 detik<br>• Aktifkan Humanize untuk teks natural</p>
 </div>
 <div style="background:#1e293b;border:1px solid #334155;border-radius:10px;padding:14px">
-<h4 style="color:#0d9488;margin:0 0 8px">FAQ</h4>
-<p style="margin:4px 0;font-size:13px">• Key aman di browser Anda<br>• 30 req/menit gratis<br>• Tanpa kartu kredit</p>
+<h4 style="color:#0d9488;margin:0 0 8px" data-t="guide_faq_title">FAQ</h4>
+<p style="margin:4px 0;font-size:13px" data-t="guide_faq">• Key aman di browser Anda<br>• 30 req/menit gratis<br>• Tanpa kartu kredit</p>
 </div>
 </div></div></div></div>
 
@@ -205,7 +206,7 @@ select option{background:var(--card);color:var(--text)}
 <header class="glass" style="border-bottom:1px solid var(--border);padding:10px 20px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;flex-wrap:wrap;gap:8px">
 <div style="display:flex;align-items:center;gap:12px">
 <div style="width:36px;height:36px;background:var(--accent);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px">📖</div>
-<div><h1 style="font-size:16px;font-weight:700;line-height:1.2">PenZero AI</h1><p style="font-size:11px;color:var(--muted)">Tulis e-book dengan AI</p></div>
+<div><h1 style="font-size:16px;font-weight:700;line-height:1.2">PenZero AI</h1><p style="font-size:11px;color:var(--muted)" data-t="h_sub">Tulis e-book dengan AI</p></div>
 </div>
 <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
 <button class="btn btn-outline btn-sm" id="langBtn" onclick="toggleLang()" style="margin-right:4px">🇬🇧 EN</button>
@@ -298,6 +299,7 @@ select option{background:var(--card);color:var(--text)}
 <button id="expHtml" class="btn btn-accent" style="width:100%;justify-content:center" onclick="expEbook('html')" disabled>Export HTML</button>
 <button id="expDoc" class="btn btn-success" style="width:100%;justify-content:center;margin-top:6px" onclick="expEbook('doc')" disabled>Export DOC</button>
 <button id="expPdf" class="btn btn-accent" style="width:100%;justify-content:center;margin-top:6px" onclick="expPdf()" disabled>Export PDF</button>
+<button id="expEpub" class="btn btn-success" style="width:100%;justify-content:center;margin-top:6px" onclick="expEpub()" disabled>Export EPUB</button>
 </div>
 
 <div style="width:5px;cursor:col-resize;flex-shrink:0;z-index:10;transition:background .2s" onmouseover="this.style.background='var(--accent)'" onmouseout="this.style.background='transparent'"></div>
@@ -333,6 +335,7 @@ select option{background:var(--card);color:var(--text)}
 <button id="writeBtn" class="btn btn-accent btn-sm" onclick="writeCh()" disabled>Tulis dengan AI</button>
 <button id="rewBtn" class="btn btn-outline btn-sm" onclick="rewCh()" disabled>Tulis Ulang</button>
 <button id="saveBtn" class="btn btn-outline btn-sm" onclick="saveCh()" disabled>Simpan</button>
+<button id="illBtn" class="btn btn-outline btn-sm" onclick="genIllustration()" disabled>🎨 Illustrasi</button>
 <button id="skipBtn" class="btn btn-outline btn-sm" style="display:none;background:rgba(255,255,0,.1);border-color:#fbbf24;color:#fbbf24" onclick="skipTW()">Skip</button>
 </div>
 <div style="display:flex;gap:0;padding:0 16px">
@@ -454,18 +457,29 @@ if(!(S.title||'').trim()){toast('Isi judul dulu','warning');return}
 if(!(S.desc||'').trim()){toast('Isi sinopsis dulu','warning');return}
 var b=document.getElementById('genOutBtn');b.disabled=true;b.innerHTML='<div class="spinner" style="width:16px;height:16px"></div> Generating...';
 try{
+var targetCount=S.chapterCount||5;
+var needProlog=S.hasProlog?1:0;
+var needEpilog=S.hasEpilog?1:0;
+var totalItems=targetCount+needProlog+needEpilog;
 var hi=S.humanize?'\nGunakan bahasa yang sangat natural, human-like, tidak kaku. Variasikan panjang kalimat.':'';
-var sys='Kamu perencana buku profesional. Output HANYA JSON array, tanpa markdown, tanpa code block. Format: [{"title":"...","summary":"..."}]';
-var p='Buat outline:\n- Judul: '+S.title+'\n- Tipe: '+S.bookType+'\n- Genre: '+S.genre+'\n- Sinopsis: '+S.desc+'\n- Target: '+S.target+'\n- Jumlah chapter: '+S.chapterCount+'\n- Bahasa: '+S.lang+'\n- Tone: '+S.tone+'\n- Prolog: '+(S.hasProlog?'Ya':'Tidak')+'\n- Epilog: '+(S.hasEpilog?'Ya':'Tidak')+hi+'\n\nOutput JSON array langsung.';
+var sys='Kamu perencana buku profesional. Output HARUS PERSIS '+totalItems+' item dalam JSON array. Format: [{"title":"...","summary":"..."}]';
+var p='Buat outline buku lengkap. OUTPUT HARUS TEPAT '+totalItems+' ITEM, TIDAK BOLEH KURANG.\n\n- Judul: '+S.title+'\n- Tipe: '+S.bookType+'\n- Genre: '+S.genre+'\n- Sinopsis: '+S.desc+'\n- Target: '+S.target+'\n- Jumlah chapter: '+targetCount+'\n- Bahasa: '+S.lang+'\n- Tone: '+S.tone+(needProlog?'\n- SERTAKAN Prolog sebagai item pertama':'')+(needEpilog?'\n- SERTAKAN Epilog sebagai item terakhir':'')+hi+'\n\nOUTPUT HARUS JSON array dengan '+totalItems+' item. Jangan kurangi. Jangan singkat. Langsung JSON.';
 var res=await callAI(p,sys);
-// FIX: Ekstrak JSON array untuk mengatasi kebiasaan LLM memberi obrolan tak perlu sebelum/sesudah JSON
-var jsonStr = res;
-var sIndex = res.indexOf('[');
-var eIndex = res.lastIndexOf(']');
-if(sIndex !== -1 && eIndex !== -1 && eIndex > sIndex) {
-  jsonStr = res.substring(sIndex, eIndex + 1);
-}
+var sIdx=res.indexOf('[');
+var eIdx=res.lastIndexOf(']');
+var jsonStr=sIdx>=0&&eIdx>sIdx?res.substring(sIdx,eIdx+1):res;
 var parsed=JSON.parse(jsonStr);
+
+// Retry if chapter count is too low
+if(parsed.length<targetCount&&targetCount>2){
+  b.innerHTML='<div class="spinner" style="width:16px;height:16px"></div> Melengkapi...';
+  var p2='Tadi kamu hanya memberi '+parsed.length+' chapter. TOLONG LENGKAPI menjadi '+targetCount+' chapter (ditambah prolog/epilog jika diminta). Output ulang FULL JSON array dengan semua chapter. Judul: '+S.title+'. Genre: '+S.genre+'. Sinopsis: '+S.desc;
+  var res2=await callAI(p2,sys);
+  sIdx=res2.indexOf('[');eIdx=res2.lastIndexOf(']');
+  jsonStr=sIdx>=0&&eIdx>sIdx?res2.substring(sIdx,eIdx+1):res2;
+  parsed=JSON.parse(jsonStr);
+}
+
 S.chapters=parsed.map(function(c,i){return{title:c.title||'Chapter '+(i+1),summary:c.summary||'',content:''}});
 ucl();ub();toast('Outline dibuat! '+S.chapters.length+' chapter','success');as()
 }catch(e){toast('Gagal: '+e.message,'error')}
@@ -491,6 +505,20 @@ function updCp(){var t=S.chapters.length,d=S.chapters.filter(function(c){return 
 // ===== SELECT CHAPTER =====
 function selCh(i){if(writing){toast('Tunggu proses selesai','warning');return}saveSilent();aIdx=i;var c=S.chapters[i];document.getElementById('chTitleInp').value=c.title;document.getElementById('chContent').value=c.content||'';document.getElementById('actNum').textContent=i+1;document.getElementById('emptyHero').style.display='none';document.getElementById('centerMain').style.display='flex';ucl();uwc();ub()}
 function updChTitle(){if(aIdx<0||!S.chapters[aIdx])return;S.chapters[aIdx].title=document.getElementById('chTitleInp').value;ucl();as()}
+function genIllustration(){
+if(aIdx<0)return;
+var ch=S.chapters[aIdx];
+var btn=document.getElementById("illBtn");
+btn.disabled=true;btn.textContent="🎨 Generating...";
+var prompt=encodeURIComponent("Book illustration: "+ch.title+". "+(ch.summary||"").substring(0,200)+". Style: "+S.genre+", "+(S.tone||"professional")+" mood. Clean illustration.");
+var imgUrl="https://image.pollinations.ai/prompt/"+prompt+"?width=768&height=512&nologo=true&seed="+Date.now();
+var imgTag="<div style=\"text-align:center;margin:24px 0\"><img src=\""+imgUrl+"\" alt=\"Illustrasi "+esc(ch.title)+"\" style=\"max-width:100%;border-radius:12px;box-shadow:0 4px 24px rgba(0,0,0,.2)\" loading=\"lazy\"><p style=\"font-size:11px;color:var(--muted);margin-top:6px\">🎨 AI Illustrasi — "+esc(ch.title)+"</p></div>";
+var el=document.getElementById("chContent");
+el.value=el.value+"\n\n"+imgTag;
+S.chapters[aIdx].content=el.value;as();
+toast("Illustrasi ditambahkan!","success");
+btn.disabled=false;btn.textContent="🎨 Illustrasi"
+}
 function saveCh(){if(aIdx<0)return;S.chapters[aIdx].content=document.getElementById('chContent').value;ucl();ub();as();toast('Chapter tersimpan','success')}
 function saveSilent(){if(aIdx<0)return;S.chapters[aIdx].content=document.getElementById('chContent').value}
 
@@ -641,25 +669,40 @@ document.getElementById('resetOutBtn').disabled=!hc||writing;
 document.getElementById('expHtml').disabled=!hcon;
 document.getElementById('expDoc').disabled=!hcon;
 document.getElementById('expPdf').disabled=!hcon;
+document.getElementById('expEpub').disabled=!hcon;
 document.getElementById('writeBtn').disabled=!ha||writing;
 document.getElementById('rewBtn').disabled=!ha||writing;
 document.getElementById('saveBtn').disabled=!ha;
+document.getElementById('illBtn').disabled=!ha;
 document.getElementById('plagBtn').disabled=!ha;
 document.getElementById('aiBtn').disabled=!ha
 }
 
 // ===== EXPORT =====
-function expEbook(fmt){
-saveSilent();
-if(!S.chapters.some(function(c){return c.content&&c.content.trim()})){toast('Tidak ada konten','warning');return}
+function buildEbookHTML(){
 var ch='';
 S.chapters.forEach(function(c){if(!c.content||!c.content.trim())return;ch+='<div style="page-break-before:always"><h2 style="font-size:24px;font-weight:700;margin-bottom:16px;color:#1e293b;border-bottom:2px solid #8b5cf6;padding-bottom:8px">'+esc(c.title)+'</h2><div style="font-size:15px;line-height:1.9;color:#334155;white-space:pre-wrap">'+esc(c.content)+'</div></div>'});
 var cov=S.coverData?'<div style="text-align:center;margin-bottom:40px"><img src="'+S.coverData+'" style="max-width:300px;border-radius:12px;box-shadow:0 8px 32px rgba(0,0,0,.2)"></div>':'';
-var full='<!DOCTYPE html><html><head><meta charset="UTF-8"><title>'+esc(S.title)+'</title><link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet"><style>*{margin:0;padding:0;box-sizing:border-box}body{font-family:Inter,sans-serif;max-width:700px;margin:0 auto;padding:40px 20px;background:#fff;color:#1e293b}@media print{body{padding:20px}}</style></head><body>'+cov+'<div style="text-align:center;margin-bottom:40px"><h1 style="font-size:36px;font-weight:800;margin-bottom:8px">'+esc(S.title)+'</h1><p style="font-size:16px;color:#64748b">oleh '+esc(S.author||'Penulis')+'</p>'+(S.desc?'<p style="font-size:13px;color:#94a3b8;margin-top:12px;max-width:500px;margin-left:auto;margin-right:auto">'+esc(S.desc)+'</p>':'')+'</div><hr style="border:none;border-top:1px solid #e2e8f0;margin:30px 0">'+ch+'<div style="text-align:center;margin-top:40px;padding:20px;color:#94a3b8;font-size:12px">Dibuat dengan PenZero AI</div></body></html>';
+return '<!DOCTYPE html><html><head><meta charset="UTF-8"><title>'+esc(S.title)+'</title><link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet"><style>*{margin:0;padding:0;box-sizing:border-box}body{font-family:Inter,sans-serif;max-width:700px;margin:0 auto;padding:40px 20px;background:#fff;color:#1e293b}@media print{body{padding:20px}}</style></head><body>'+cov+'<div style="text-align:center;margin-bottom:40px"><h1 style="font-size:36px;font-weight:800;margin-bottom:8px">'+esc(S.title)+'</h1><p style="font-size:16px;color:#64748b">oleh '+esc(S.author||'Penulis')+'</p>'+(S.desc?'<p style="font-size:13px;color:#94a3b8;margin-top:12px;max-width:500px;margin-left:auto;margin-right:auto">'+esc(S.desc)+'</p>':'')+'</div><hr style="border:none;border-top:1px solid #e2e8f0;margin:30px 0">'+ch+'<div style="text-align:center;margin-top:40px;padding:20px;color:#94a3b8;font-size:12px">Dibuat dengan PenZero AI</div></body></html>'
+}
+function expEbook(fmt){
+saveSilent();
+if(!S.chapters.some(function(c){return c.content&&c.content.trim()})){toast('Tidak ada konten','warning');return}
+var full=buildEbookHTML();
 if(fmt==='html'){dl(full,(S.title||'ebook')+'.html','text/html');toast('Export HTML berhasil!','success')}
 else{var b=new Blob(['\ufeff'+full],{type:'application/msword'});var u=URL.createObjectURL(b);var a=document.createElement('a');a.href=u;a.download=(S.title||'ebook')+'.doc';a.click();URL.revokeObjectURL(u);toast('Export DOC berhasil!','success')}
 }
-function expPdf(){saveSilent();if(!S.chapters.some(function(c){return c.content&&c.content.trim()})){toast('Tidak ada konten','warning');return}expEbook('html');setTimeout(function(){window.print()},500);toast('Pilih Save as PDF di dialog print','info')}
+function expPdf(){
+saveSilent();
+if(!S.chapters.some(function(c){return c.content&&c.content.trim()})){toast('Tidak ada konten','warning');return}
+var full=buildEbookHTML();
+var w=window.open('','_blank','width=800,height=600');
+w.document.write(full);
+w.document.close();
+w.focus();
+setTimeout(function(){w.print();toast('Pilih Save as PDF di dialog print','info')},1000)
+}
+function expEpub(){saveSilent();if(!S.chapters.some(function(c){return c.content&&c.content.trim()})){toast('Tidak ada konten','warning');return}toast('Membuat EPUB...','info');var zip=new JSZip();zip.file('mimetype','application/epub+zip',{compression:'STORE'});var cId=[],cOpf='',cNcx='';S.chapters.forEach(function(c,i){if(!c.content||!c.content.trim())return;var id='ch'+i,fn='chapter-'+i+'.xhtml';cId.push(id);var body='<html xmlns="http://www.w3.org/1999/xhtml"><head><title>'+esc(c.title)+'</title><link rel="stylesheet" href="styles.css"/></head><body><h2>'+esc(c.title)+'</h2>'+c.content.replace(/\n/g,'<br/>')+'</body></html>';zip.file('OEBPS/'+fn,body);cOpf+='<item id="'+id+'" href="'+fn+'" media-type="application/xhtml+xml"/>';cNcx+='<navPoint id="nav-'+i+'" playOrder="'+(i+1)+'"><navLabel><text>'+esc(c.title)+'</text></navLabel><content src="'+fn+'"/></navPoint>'});var title=esc(S.title||'Ebook'),author=esc(S.author||'Penulis'),uid='penzero-'+Date.now();zip.file('META-INF/container.xml','<?xml version="1.0"?><container version="1.0" xmlns="urn:oasis:names:tc:opendocument:xmlns:container"><rootfiles><rootfile full-path="OEBPS/content.opf" media-type="application/oebps-package+xml"/></rootfiles></container>');zip.file('OEBPS/content.opf','<?xml version="1.0" encoding="UTF-8"?><package version="2.0" unique-identifier="bookid" xmlns="http://www.idpf.org/2007/opf"><metadata xmlns:dc="http://purl.org/dc/elements/1.1/"><dc:title>'+title+'</dc:title><dc:creator>'+author+'</dc:creator><dc:identifier id="bookid">'+uid+'</dc:identifier><dc:language>'+esc(S.lang||'id')+'</dc:language></metadata><manifest><item id="ncx" href="toc.ncx" media-type="application/x-dtbncx+xml"/><item id="css" href="styles.css" media-type="text/css"/>'+cOpf+'</manifest><spine toc="ncx">'+cId.map(function(id){return'<itemref idref="'+id+'"/>'}).join('')+'</spine></package>');zip.file('OEBPS/toc.ncx','<?xml version="1.0" encoding="UTF-8"?><ncx version="2005-1" xmlns="http://www.daisy.org/z3986/2005/ncx/"><head><meta name="dtb:uid" content="'+uid+'"/></head><docTitle><text>'+title+'</text></docTitle><navMap>'+cNcx+'</navMap></ncx>');zip.file('OEBPS/styles.css','body{font-family:Georgia,serif;font-size:16px;line-height:1.7;color:#1a1a1a;max-width:600px;margin:30px auto;padding:0 15px}h2{font-size:22px;font-weight:700;margin:40px 0 16px;border-bottom:2px solid #8b5cf6;padding-bottom:6px}');zip.generateAsync({type:'blob',mimeType:'application/epub+zip'}).then(function(blob){var u=URL.createObjectURL(blob);var a=document.createElement('a');a.href=u;a.download=(S.title||'ebook')+'.epub';a.click();URL.revokeObjectURL(u);toast('EPUB berhasil! Buka di Apple Books / Google Play Books','success')})}
 function dl(c,n,t){var b=new Blob([c],{type:t}),u=URL.createObjectURL(b),a=document.createElement('a');a.href=u;a.download=n;a.click();URL.revokeObjectURL(u)}
 
 // ===== SAVE/LOAD PROJECT =====
@@ -693,47 +736,4 @@ var res=await callAI(p,'Kamu kreator ide buku kreatif.');
 document.getElementById('ideResult').style.display='block';
 document.getElementById('ideResult').innerHTML='<div style="background:var(--card);border-radius:10px;padding:14px;font-size:13px;line-height:1.7;white-space:pre-wrap;max-height:300px;overflow-y:auto">'+esc(res)+'</div><p style="font-size:11px;color:var(--muted);margin-top:8px">Salin ide yang Anda suka ke form di panel kiri.</p>'
 }catch(e){toast('Gagal: '+e.message,'error')}
-document.getElementById('ideLoading').style.display='none';b.disabled=false
-}
-
-// ===== AUTOSAVE =====
-function as(){if(asTimer)clearTimeout(asTimer);asTimer=setTimeout(function(){LS.set('pz_proj',JSON.stringify(S))},1000)}
-
-// ===== INIT =====
-(function(){
-// Load theme
-var th=LS.get('pz_th');
-if(th){document.documentElement.setAttribute('data-theme',th);document.getElementById('themeBtn').textContent=th==='light'?'☀️':'🌙'}
-// Load project
-var saved=LS.get('pz_proj');
-if(saved){
-try{var d=JSON.parse(saved);Object.assign(S,d);
-if(S.chapters.length){document.getElementById('emptyHero').style.display='none';document.getElementById('centerMain').style.display='flex';if(S.coverData){document.getElementById('coverImg').src=S.coverData;document.getElementById('coverPrev').style.display='block'}}
-syncUI();ub()}catch(e){}
-}
-fillGenres();updBanner()
-})();
-
-// === I18N ===
-var UI_LANG=localStorage.getItem("penzero_lang")||"id";
-var T={id:{h_sub:"Tulis e-book dengan AI",guide_title:"Panduan PenZero",step1:"1. Dapatkan API Key",step2:"2. Masukkan API Key",step3:"3. Setup Buku",step4:"4. Generate & Tulis",step5:"5. Simpan & Export",tips:"Tips & FAQ"},en:{h_sub:"Write e-books with AI",guide_title:"PenZero Guide",step1:"1. Get API Key",step2:"2. Enter API Key",step3:"3. Setup Book",step4:"4. Generate & Write",step5:"5. Save & Export",tips:"Tips & FAQ"}};
-function t(k){return T[UI_LANG]&&T[UI_LANG][k]||T.id[k]||k;}
-function toggleLang(){var l=localStorage.getItem("penzero_lang")||"id";l=l==="en"?"id":"en";localStorage.setItem("penzero_lang",l);applyLang();}
-function applyLang(){UI_LANG=localStorage.getItem("penzero_lang")||"id";var b=document.getElementById("langBtn");if(b)b.textContent=UI_LANG==="en"?"🇮🇩 ID":"🇬🇧 EN";var s=document.querySelector("p[data-t='h_sub']");if(s)s.textContent=t("h_sub");}
-
-var THEMES=["purple","ocean","teal","amber","rose","slate"];
-function setColorTheme(t){
-  document.documentElement.setAttribute("data-theme",t);
-  localStorage.setItem("penzero_color",t);
-  document.getElementById("themeColorDot").style.background="var(--accent)";
-  document.getElementById("themeDrop").classList.remove("show");
-}
-(function(){
-  var saved=localStorage.getItem("penzero_color")||"purple";
-  document.documentElement.setAttribute("data-theme",saved);
-  document.addEventListener("click",function(e){var d=document.getElementById("themeDrop");if(d&&d.classList.contains("show")&&!d.contains(e.target)&&e.target!==document.getElementById("themeColorDot"))d.classList.remove("show");});
-  applyLang();
-})();
-</script>
-</body>
-</html>
+documen
